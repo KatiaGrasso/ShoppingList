@@ -1,5 +1,8 @@
 package com.example.shoppinglist
 
 class PurchasableItem {
-    //costruttori
+    //TODO
+    // costruttori:
+    // item: costruttore
+    // categorie: array
 }
