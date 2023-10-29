@@ -1,8 +1,10 @@
 package com.example.shoppinglist
 
-class PurchasableItem {
+data class PurchasableItem (val description:String, val category:String, val isPurchased: Boolean=false){
     //TODO
     // costruttori:
     // item: costruttore
     // categorie: array
+
+
 }
