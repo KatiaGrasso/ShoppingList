@@ -1,9 +1,17 @@
 package com.example.shoppinglist
 
+
 import androidx.lifecycle.ViewModel
 
+
 class PurchaseViewModel: ViewModel() {
-    //val itemList = MutableList<PurchasableItem>() //Lista degli elementi
+    val itemList = mutableListOf<PurchasableItem>() //Lista degli elementi
+
+    fun addItem(description: String, category: String)
+    {
+        itemList.add(PurchasableItem(description, category))
+    }
+
     //TODO
     // metodi: 4
     // aggiunta item
