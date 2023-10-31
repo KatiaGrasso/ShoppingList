@@ -1,71 +1,97 @@
 package com.example.shoppinglist
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.view.Window
-import android.widget.TextView
-import com.google.android.material.textfield.TextInputEditText
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
-class PurchaseActivity : AppCompatActivity() {
-    val viewModel=PurchaseViewModel()
-    var itemList=viewModel.itemList
-    lateinit var showItemsView: TextView
-
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-        //TODO
-        // interfaccia: 1 pagina con lista categorie e relativi items e pop up per combo box
+class PurchaseActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val addProduct: Button=findViewById(R.id.addProduct)
-        showItemsView=findViewById(R.id.showItems)
-
-        viewModel.addItem("Carote", "Verdura")
-        showItems()
-
-        addProduct.setOnClickListener{
-
-            addProductForm()
+        setContent {
+            //TODO da inserire in un box sotto la voce descrizione
+            DropDownMenu()
         }
     }
+}
 
-    private fun addProductForm(){
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.form)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.WHITE))
-        val confirmAdd=dialog.findViewById<Button>(R.id.confirmAdd)
-        val inputDescription: TextInputEditText =dialog.findViewById(R.id.inputDescription)
-        val inputCategory: TextInputEditText=dialog.findViewById(R.id.inputCategory)
+@OptIn(ExperimentalMaterial3Api::class)
 
+@Composable
+fun DropDownMenu() {
 
-        confirmAdd.setOnClickListener(){
-            val description = inputDescription.text.toString()
-            val category=inputCategory.text.toString()
-            viewModel.addItem(description, category)
-            showItems()
-            dialog.dismiss()
-        }
-
-        dialog.show()
+    var isExpanded by remember {
+        mutableStateOf(false) //default: menù chiuso
+    }
+    var category by remember {
+        mutableStateOf("") //default: nessuna scelta
     }
 
-    fun showItems(){
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center )
+    {
+        ExposedDropdownMenuBox(
+            expanded = isExpanded ,
+            onExpandedChange = { isExpanded = it }
+        ) {
+            TextField(
+                value = category,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                    //icona di default per i menù a tendina
+                },
+                modifier = Modifier.menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = "Frutta")
+                    },
+                    onClick = {
+                        category = "Frutta"
+                        isExpanded = false //se clicco su una categoria, chiudo il menù a tendina
+                    })
 
-        var t=""
-        for (i in itemList){
-            t+=i.description+" "+i.category+"\n"
+                DropdownMenuItem(
+                    text = {
+                        Text(text = "Verdure")
+                    },
+                    onClick = {
+                        category = "Verdura"
+                        isExpanded = false
+                    })
+
+                DropdownMenuItem(
+                    text = {
+                        Text(text = "Aggiungi categoria")
+                        //TODO aggiungere bottone
+                    },
+                    onClick = {
+                        category = ""
+                        isExpanded = false
+                        //TODO pop up per nome nuova categoria
+                    })
+            }
         }
-        showItemsView.text=t
-
-
     }
-
-
-
 }
