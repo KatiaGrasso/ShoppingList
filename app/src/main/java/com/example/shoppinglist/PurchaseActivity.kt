@@ -17,6 +17,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -45,7 +46,7 @@ class PurchaseActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
-fun DropDownMenu() {
+fun ChooseCategory() {
 
     var isExpanded by remember {
         mutableStateOf(false) //default: menù chiuso
@@ -55,6 +56,7 @@ fun DropDownMenu() {
     }
 
     Box(
+
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center )
     {
@@ -140,7 +142,9 @@ fun MainScreen(){
                 }
             )
         }
-        DropDownMenu()
+        AddDescription()
+        ChooseCategory()
+
     }
 
 
@@ -176,6 +180,18 @@ fun ItemRow(itemText: String, isChecked: Boolean, onCheckedChange: (Boolean) -> 
             Text(text = "Elimina") //qui sarebbe carino mettere l'icona del cestino
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddDescription() {
+    var text by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = { text= it }, //TODO aggiunta voce alla lista degli item
+        label = { Text("Descrizione") },
+    )
 }
 
 
