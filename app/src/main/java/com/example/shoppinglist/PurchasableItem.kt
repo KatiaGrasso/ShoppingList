@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 data class PurchasableItem (val description:String, val category:String, var isPurchased: Boolean=false){
     //TODO
