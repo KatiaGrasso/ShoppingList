@@ -69,7 +69,7 @@ fun ChooseCategory() {
         mutableStateOf(false) //default: menù chiuso
     }
     var category by remember {
-        mutableStateOf("") //default: nessuna scelta
+        mutableStateOf("Categoria") //default: nessuna scelta
     }
 
     Row() {
@@ -128,6 +128,7 @@ fun ChooseCategory() {
 
 @Composable
 fun PopupMenu() {
+
     Box(
         modifier = Modifier.fillMaxSize(0.8F),
         contentAlignment = Alignment.Center

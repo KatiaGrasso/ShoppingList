@@ -85,11 +85,16 @@ fun MainScreen(){
         }
 
     }
+    Box(
+        modifier = Modifier.fillMaxSize()
+        .padding(8.dp),
+        contentAlignment = Alignment.BottomEnd
+
+    ){
     Row {
         // Pulsante per aprire il popup
         Button(
             onClick = { showDialog = true },
-            modifier = Modifier.align(Alignment.Bottom)
         ) {
             Text("Aggiungi")
         }
@@ -124,4 +129,4 @@ fun MainScreen(){
         }
     }
 
-}
+}}
