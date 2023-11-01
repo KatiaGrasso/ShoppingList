@@ -75,9 +75,7 @@ fun MainScreen(){
                 }
             )
         }
-        AddDescription()
-        ChooseCategory()
-
+        PopupMenu()
     }
 
 
