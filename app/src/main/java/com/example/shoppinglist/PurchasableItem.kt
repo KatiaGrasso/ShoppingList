@@ -43,12 +43,12 @@ fun ItemRow(itemDescription: String, itemCategory: String, isChecked: Boolean, o
         Column ( modifier = Modifier.padding(2.dp)){
             Text(
                 text = itemDescription,
-                fontSize = 20.sp
+                fontSize = 18.sp
             )
-            Text(
+           /* Text(
                 text = itemCategory,
                 fontSize = 12.sp
-            )
+            )*/
 
         }
 
