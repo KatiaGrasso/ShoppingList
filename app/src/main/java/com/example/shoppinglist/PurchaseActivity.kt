@@ -115,12 +115,21 @@ fun ChooseCategory() {
 
 @Composable
 fun MainScreen(){
-    var shoppingItems by remember { mutableStateOf(listOf("Pane", "Latte", "Uova")) }
+    val viewModel=PurchaseViewModel()
+    var itemList=viewModel.itemList
+    var shoppingItems by remember { mutableStateOf(itemList) }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp),
+    viewModel.addItem("Carote", "Verdura")
+    viewModel.addItem("Zucchine", "Verdura")
+    viewModel.addItem("Uva", "Frutta")
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
+
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "Lista della spesa", fontSize = 24.sp,
@@ -128,11 +137,14 @@ fun MainScreen(){
         )
 
         shoppingItems.forEachIndexed { index, item ->
+            var isChecked by remember { mutableStateOf(item.isPurchased) }
             ItemRow(
-                itemText = item,
-                isChecked = false,
-                onCheckedChange = { isChecked ->
-                    // Gestisci il cambiamento di stato della checkbox
+                itemDescription = item.description,
+                itemCategory = item.category,
+                isChecked = isChecked,
+                onCheckedChange = { isChecked = it
+                    // Puoi anche gestire l'aggiornamento dell'elemento nel tuo ViewModel qui
+                    viewModel.updateItem(item.copy(isPurchased = it))
                 },
                 onDeleteClick = {
                     // Gestisci l'eliminazione dell'elemento
@@ -152,7 +164,8 @@ fun MainScreen(){
 }
 
 @Composable
-fun ItemRow(itemText: String, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit, onDeleteClick: () -> Unit) {
+fun ItemRow(itemDescription: String, itemCategory: String, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit, onDeleteClick: () -> Unit) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -160,11 +173,18 @@ fun ItemRow(itemText: String, isChecked: Boolean, onCheckedChange: (Boolean) -> 
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Testo dell'elemento
-        Text(
-            text = itemText,
-            fontSize = 20.sp
-        )
+        Column ( modifier = Modifier.padding(2.dp),){
+            Text(
+                text = itemDescription,
+                fontSize = 20.sp
+            )
+            Text(
+                text = itemCategory,
+                fontSize = 12.sp
+            )
+
+        }
+
 
         // Checkbox
         Checkbox(

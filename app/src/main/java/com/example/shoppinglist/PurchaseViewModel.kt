@@ -11,6 +11,9 @@ class PurchaseViewModel: ViewModel() {
     {
         itemList.add(PurchasableItem(description, category))
     }
+    fun updateItem(item: PurchasableItem){
+
+    }
 
     //TODO
     // metodi: 4
