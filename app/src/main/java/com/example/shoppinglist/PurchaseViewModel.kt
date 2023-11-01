@@ -3,6 +3,7 @@ package com.example.shoppinglist
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -49,7 +50,7 @@ class PurchaseViewModel: ViewModel() {
 @Composable
 fun AddDescription() {
     var text by remember { mutableStateOf("") }
-    Column {
+    Row {
         OutlinedTextField(
             value = text,
             onValueChange = { text = it }, //TODO aggiunta voce alla lista degli item
@@ -71,7 +72,7 @@ fun ChooseCategory() {
         mutableStateOf("") //default: nessuna scelta
     }
 
-    Column() {
+    Row() {
         ExposedDropdownMenuBox(
             expanded = isExpanded ,
             onExpandedChange = { isExpanded = it }
@@ -122,6 +123,8 @@ fun ChooseCategory() {
         }
     }
 }
+
+
 
 @Composable
 fun PopupMenu() {
