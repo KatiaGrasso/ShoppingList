@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 data class PurchasableItem (val description:String, val category:String, var isPurchased: Boolean=false){
     //TODO
@@ -37,10 +38,10 @@ fun ItemRow(itemDescription: String, itemCategory: String, isChecked: Boolean, o
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column ( modifier = Modifier.padding(2.dp),){
+        Column ( modifier = Modifier.padding(2.dp)){
             Text(
                 text = itemDescription,
                 fontSize = 20.sp
@@ -52,7 +53,7 @@ fun ItemRow(itemDescription: String, itemCategory: String, isChecked: Boolean, o
 
         }
 
-
+        Row( verticalAlignment = Alignment.CenterVertically) {
         // Checkbox
         Checkbox(
             checked = isChecked,
@@ -62,15 +63,16 @@ fun ItemRow(itemDescription: String, itemCategory: String, isChecked: Boolean, o
         // Bottone Elimina
         FloatingActionButton(
             onClick = onDeleteClick,
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 8.dp),
+
         ) {
             Icon(imageVector = Icons.Outlined.Delete,
                 contentDescription = "Elimina",
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-
         }
+    }
     }
 }
 
