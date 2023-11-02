@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,12 +45,11 @@ class PurchaseActivity : ComponentActivity() {
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
 fun MainScreen() {
-    val viewModel = PurchaseViewModel()
+
     var itemList = viewModel.itemList
     var shoppingItems by remember { mutableStateOf(itemList) }
     var showDialog by remember { mutableStateOf(false) }
@@ -57,11 +58,14 @@ fun MainScreen() {
     viewModel.addItem("Zucchine", "Verdura")
     viewModel.addItem("Uva", "Frutta")
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+
 
     ) {
 
@@ -92,6 +96,7 @@ fun MainScreen() {
                     viewModel.updateItem(item.copy(isPurchased = it))
                 },
                 onDeleteClick = {
+                    viewModel.itemList.removeAt(index)
                     // Gestisci l'eliminazione dell'elemento
                     shoppingItems = shoppingItems.toMutableList().apply {
                         removeAt(index)
@@ -99,6 +104,7 @@ fun MainScreen() {
                 }
             )
         }
+        //Text(text = itemList.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
 
     }
     Box(
@@ -135,12 +141,16 @@ fun MainScreen() {
                         PopupMenu() //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
                         Button(
                             onClick = {
-                                showDialog = false // Chiudo il popup premendo su chiudi
+                                showDialog = false;
+                                shoppingItems.add(PurchasableItem(description_toAdd, category_toAdd))// Chiudo il popup premendo su chiudi
+                                viewModel.addItem(description_toAdd, category_toAdd)
+
                             },
                             modifier = Modifier.align(Alignment.BottomEnd)
                         ) {
                             Text("Chiudi")
                         }
+
                     }
                 }
             }

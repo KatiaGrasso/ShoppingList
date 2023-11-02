@@ -37,7 +37,18 @@ class PurchaseViewModel: ViewModel() {
 
     fun addItem(description: String, category: String)
     {
-        itemList.add(PurchasableItem(description, category))
+        var itemListDescriptions= mutableListOf<String>()
+        for (i in itemList){
+            itemListDescriptions.add(i.description)
+        }
+        var flag=false
+        for (c in itemListDescriptions){
+            if(c==description){
+                flag=true
+            }
+        }
+        if(!flag)
+            itemList.add(PurchasableItem(description, category))
     }
     fun addCategory(category: String)
     {
@@ -63,6 +74,8 @@ class PurchaseViewModel: ViewModel() {
 
 }
 val viewModel=PurchaseViewModel()
+var description_toAdd =""
+var category_toAdd= ""
 
 // aggiunta desrizione
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,6 +89,8 @@ fun AddDescription() {
             label = { Text("Descrizione") },
         )
     }
+    description_toAdd=""
+    description_toAdd=text
 }
 
 //scelta categoria
@@ -131,6 +146,8 @@ fun ChooseCategory() {
                             category = cat
                             isExpanded =
                                 false //se clicco su una categoria, chiudo il menù a tendina
+                            category_toAdd=""
+                            category_toAdd=cat
                         })
                 }
 
@@ -177,6 +194,8 @@ fun ChooseCategory() {
                                     showDialog = false;
                                     viewModel.addCategory(text);
                                     category = text; // Chiudo il popup premendo su chiudi
+                                    category_toAdd=""
+                                    category_toAdd=text
                                 },
                                 modifier = Modifier.align(Alignment.BottomEnd)
                             ) {
@@ -207,5 +226,6 @@ fun PopupMenu() {
             Spacer(modifier = Modifier.height(16.dp))
             AddDescription()
         }
+
     }
 }
