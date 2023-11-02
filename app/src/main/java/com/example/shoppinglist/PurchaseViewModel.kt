@@ -64,6 +64,9 @@ class PurchaseViewModel: ViewModel() {
     fun updateItem(item: PurchasableItem){
 
     }
+    fun removeItem(item: PurchasableItem){
+        itemList.remove(item)
+    }
 
     //TODO
     // metodi: 4

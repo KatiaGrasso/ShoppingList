@@ -36,8 +36,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
 class PurchaseActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.addItem("Carote", "Verdura")
+        viewModel.addItem("Zucchine", "Verdura")
+        viewModel.addItem("Uva", "Frutta")
         setContent {
             //TODO da inserire in un box sotto la voce descrizione
             MainScreen()
@@ -54,9 +58,7 @@ fun MainScreen() {
     var shoppingItems by remember { mutableStateOf(itemList) }
     var showDialog by remember { mutableStateOf(false) }
 
-    viewModel.addItem("Carote", "Verdura")
-    viewModel.addItem("Zucchine", "Verdura")
-    viewModel.addItem("Uva", "Frutta")
+
 
 
     Column(
@@ -96,14 +98,19 @@ fun MainScreen() {
                     viewModel.updateItem(item.copy(isPurchased = it))
                 },
                 onDeleteClick = {
-                    viewModel.itemList.removeAt(index)
                     // Gestisci l'eliminazione dell'elemento
+
                     shoppingItems = shoppingItems.toMutableList().apply {
                         removeAt(index)
                     }
+                    viewModel.removeItem(PurchasableItem(item.description, item.category))
+
+
+
                 }
             )
         }
+
         //Text(text = itemList.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
 
     }
