@@ -161,7 +161,7 @@ fun ChooseCategory() {
                     },
                     onClick = {
                         category = ""
-                        isExpanded = false
+                        //isExpanded = false  //questo faceva sì che si chiudesse il menù
                         showDialog = true
                         //TODO pop up per nome nuova categoria
                     })
