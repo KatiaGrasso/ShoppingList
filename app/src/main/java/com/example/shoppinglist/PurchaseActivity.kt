@@ -79,6 +79,7 @@ fun MainScreen() {
 
         shoppingItems.forEachIndexed { index, item ->
             var isChecked by remember { mutableStateOf(item.isPurchased) }
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -103,15 +104,17 @@ fun MainScreen() {
                     shoppingItems = shoppingItems.toMutableList().apply {
                         removeAt(index)
                     }
+
                     viewModel.removeItem(PurchasableItem(item.description, item.category))
 
-
-
+                    if(index!=shoppingItems.size)
+                        isChecked=shoppingItems.get(index).isPurchased
                 }
             )
         }
 
         //Text(text = itemList.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
+        //Text(text = shoppingItems.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
 
     }
     Box(
