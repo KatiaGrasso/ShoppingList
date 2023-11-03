@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.ViewModel
+import java.io.PushbackInputStream
 
 
 class PurchaseViewModel: ViewModel() {
@@ -47,8 +49,10 @@ class PurchaseViewModel: ViewModel() {
                 flag=true
             }
         }
-        if(!flag)
+        if(!flag){
             itemList.add(PurchasableItem(description, category))
+
+        }
     }
     fun addCategory(category: String)
     {
@@ -67,6 +71,8 @@ class PurchaseViewModel: ViewModel() {
     fun removeItem(item: PurchasableItem){
         itemList.remove(item)
     }
+
+
 
     //TODO
     // metodi: 4

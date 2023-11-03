@@ -42,6 +42,8 @@ class PurchaseActivity : ComponentActivity() {
         viewModel.addItem("Carote", "Verdura")
         viewModel.addItem("Zucchine", "Verdura")
         viewModel.addItem("Uva", "Frutta")
+        viewModel.addCategory( "Frutta")
+        viewModel.addCategory("Verdura")
         setContent {
             //TODO da inserire in un box sotto la voce descrizione
             MainScreen()
@@ -57,8 +59,7 @@ fun MainScreen() {
     var itemList = viewModel.itemList
     var shoppingItems by remember { mutableStateOf(itemList) }
     var showDialog by remember { mutableStateOf(false) }
-
-
+    var categories= viewModel.categories
 
 
     Column(
@@ -77,41 +78,46 @@ fun MainScreen() {
             textAlign = TextAlign.Center
         )
 
-        shoppingItems.forEachIndexed { index, item ->
-            var isChecked by remember { mutableStateOf(item.isPurchased) }
-
+        categories.forEachIndexed{index, item->
+            var cat=item
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp)
                     .size(50.dp),
                 shape = RoundedCornerShape(16.dp)
-            ) {
-                Text(text = item.category, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-            }
-            ItemRow(
-                itemDescription = item.description,
-                itemCategory = item.category,
-                isChecked = isChecked,
-                onCheckedChange = {
-                    isChecked = it
-                    // Puoi anche gestire l'aggiornamento dell'elemento nel tuo ViewModel qui
-                    viewModel.updateItem(item.copy(isPurchased = it))
-                },
-                onDeleteClick = {
-                    // Gestisci l'eliminazione dell'elemento
+            ){ Text(text = item, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)}
 
-                    shoppingItems = shoppingItems.toMutableList().apply {
-                        removeAt(index)
-                    }
+            shoppingItems.forEachIndexed{ index, item ->
+                if(item.category==cat){
+                    var isChecked by remember { mutableStateOf(item.isPurchased) }
+                    ItemRow(
+                        itemDescription = item.description,
+                        itemCategory = item.category,
+                        isChecked = isChecked,
+                        onCheckedChange = {
+                            isChecked = it
+                            // Puoi anche gestire l'aggiornamento dell'elemento nel tuo ViewModel qui
+                            viewModel.updateItem(item.copy(isPurchased = it))
+                        },
+                        onDeleteClick = {
+                            // Gestisci l'eliminazione dell'elemento
 
-                    viewModel.removeItem(PurchasableItem(item.description, item.category))
+                            shoppingItems = shoppingItems.toMutableList().apply {
+                                removeAt(index)
+                            }
 
-                    if(index!=shoppingItems.size)
-                        isChecked=shoppingItems.get(index).isPurchased
+                            viewModel.removeItem(PurchasableItem(item.description, item.category))
+
+                            if(index!=shoppingItems.size)
+                                isChecked=shoppingItems.get(index).isPurchased
+                        }
+                    )
                 }
-            )
+
+            }
         }
+
 
         //Text(text = itemList.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
         //Text(text = shoppingItems.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
@@ -121,7 +127,7 @@ fun MainScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
-        contentAlignment = Alignment.BottomEnd
+        contentAlignment = Alignment.BottomCenter
 
     ) {
         Row {
@@ -130,6 +136,14 @@ fun MainScreen() {
                 onClick = { showDialog = true },
             ) {
                 Text("Aggiungi")
+            }
+            Button(
+                onClick = { shoppingItems.clear();
+                    itemList.clear();
+                    categories.clear(); //Toglie tutte le categorie che ci sono nella vista, ma restano nel dropdown menu
+                          },
+            ) {
+                Text("Clear All")
             }
             if (showDialog) {
                 // Dialog per il popup
