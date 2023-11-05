@@ -34,9 +34,11 @@ import androidx.lifecycle.ViewModel
 class PurchaseViewModel: ViewModel() {
     var itemList = mutableListOf<PurchasableItem>() //Lista degli elementi
     var categories = mutableListOf<String>()
+    var map= mutableMapOf<String, MutableList<PurchasableItem>>()
 
     fun addItem(description: String, category: String)
     {
+
         var itemListDescriptions= mutableListOf<String>()
         for (i in itemList){
             itemListDescriptions.add(i.description)
@@ -48,9 +50,19 @@ class PurchaseViewModel: ViewModel() {
             }
         }
         if(!flag){
-            itemList.add(PurchasableItem(description, category))
+            val newItem = PurchasableItem(description, category)
 
+            // Aggiungi l'elemento a "itemList"
+            itemList.add(newItem)
+
+            // Verifica se "category" esiste come chiave in "map"
+            val categoryList = map.getOrPut(category) { mutableListOf() }
+
+            // Aggiungi l'elemento a "map" nella lista corrispondente a "category"
+            categoryList.add(newItem)
         }
+
+
     }
     fun addCategory(category: String)
     {

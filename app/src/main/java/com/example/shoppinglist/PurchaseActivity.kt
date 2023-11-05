@@ -60,6 +60,8 @@ fun MainScreen() {
     var shoppingItems by remember { mutableStateOf(itemList) }
     var showDialog by remember { mutableStateOf(false) }
     var categories= viewModel.categories
+    var mappa= viewModel.map
+    var map by remember { mutableStateOf(mappa) }
 
 
     Column(
@@ -78,49 +80,53 @@ fun MainScreen() {
             textAlign = TextAlign.Center
         )
 
-        categories.forEachIndexed{index, item->
-            var cat=item
+        map.forEach{item->
+            var list=item.value
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp)
                     .size(50.dp),
                 shape = RoundedCornerShape(16.dp)
-            ){ Text(text = item, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)}
+            ){ Text(text = item.key, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)}
 
-            shoppingItems.forEachIndexed{ index, item ->
-                if(item.category==cat){
-                    var isChecked by remember { mutableStateOf(item.isPurchased) }
-                    ItemRow(
-                        itemDescription = item.description,
-                        itemCategory = item.category,
-                        isChecked = isChecked,
-                        onCheckedChange = {
-                            isChecked = it
-                            // Puoi anche gestire l'aggiornamento dell'elemento nel tuo ViewModel qui
-                            viewModel.updateItem(item.copy(isPurchased = it))
-                        },
-                        onDeleteClick = {
-                            // Gestisci l'eliminazione dell'elemento
+            list.forEachIndexed{ index, item ->
+                var isChecked by remember { mutableStateOf(item.isPurchased) }
+                ItemRow(
+                    itemDescription = item.description,
+                    itemCategory = item.category,
+                    isChecked = isChecked,
+                    onCheckedChange = {
+                        isChecked = it
+                        // Puoi anche gestire l'aggiornamento dell'elemento nel tuo ViewModel qui
+                        viewModel.updateItem(item.copy(isPurchased = it))
+                    },
+                    onDeleteClick = {
+                        // Gestisci l'eliminazione dell'elemento
 
-                            shoppingItems = shoppingItems.toMutableList().apply {
-                                removeAt(index)
-                            }
+                        map=map.toMutableMap().apply { list?.remove(item) }
+                        if(list.isNullOrEmpty()){map.remove(item.category)}
+                        viewModel.removeItem(item)
 
-                            viewModel.removeItem(PurchasableItem(item.description, item.category))
-
-                            if(index!=shoppingItems.size)
-                                isChecked=shoppingItems.get(index).isPurchased
+                        /*shoppingItems = shoppingItems.toMutableList().apply {
+                            removeAt(index)
                         }
-                    )
-                }
+                        if(index!=shoppingItems.size)
+                            isChecked=shoppingItems.get(index).isPurchased*/
+
+                    }
+                )
+
 
             }
         }
 
 
+
         //Text(text = itemList.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
         //Text(text = shoppingItems.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
+        //Text(text = map.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
+        //Text(text = mappa.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
 
     }
     Box(
