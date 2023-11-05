@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.ViewModel
-import java.io.PushbackInputStream
 
 
 class PurchaseViewModel: ViewModel() {
@@ -169,7 +167,7 @@ fun ChooseCategory() {
                         category = ""
                         //isExpanded = false  //questo faceva sì che si chiudesse il menù
                         showDialog = true
-                        //TODO pop up per nome nuova categoria
+
                     })
 
                 if (showDialog) {
@@ -186,6 +184,7 @@ fun ChooseCategory() {
                                 .height(400.dp)
                                 .padding(16.dp)
                                 .background(Color.White),
+
                             contentAlignment = Alignment.Center
                         ) {
 
@@ -195,9 +194,11 @@ fun ChooseCategory() {
                                     onValueChange = {
                                         text = it
                                     }, //TODO aggiunta voce alla lista degli item
-                                    label = { Text("Inserisci categoria") },
+                                    label = { Text("Inserisci categoria") }
+
                                 )
-                            } //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
+                            }
+                            //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
                             Button(
                                 onClick = {
                                     showDialog = false;

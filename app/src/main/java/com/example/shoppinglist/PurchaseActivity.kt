@@ -3,7 +3,6 @@ package com.example.shoppinglist
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -131,20 +131,14 @@ fun MainScreen() {
 
     ) {
         Row {
+
             // Pulsante per aprire il popup
             Button(
                 onClick = { showDialog = true },
             ) {
                 Text("Aggiungi")
             }
-            Button(
-                onClick = { shoppingItems.clear();
-                    itemList.clear();
-                    categories.clear(); //Toglie tutte le categorie che ci sono nella vista, ma restano nel dropdown menu
-                          },
-            ) {
-                Text("Clear All")
-            }
+
             if (showDialog) {
                 // Dialog per il popup
                 Dialog(
@@ -178,7 +172,22 @@ fun MainScreen() {
                     }
                 }
             }
+
+            Button(
+                onClick = {
+                    shoppingItems = emptyList<PurchasableItem>().toMutableList()
+                    itemList= emptyList<PurchasableItem>().toMutableList()
+                    categories.clear()
+                }, Modifier.drawWithContent {
+                    drawContent()
+                }
+            ) {
+                Text("Clear All")
+
+            }
         }
 
     }
+
 }
+
