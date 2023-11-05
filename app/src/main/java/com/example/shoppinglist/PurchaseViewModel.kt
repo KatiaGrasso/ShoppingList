@@ -118,8 +118,7 @@ fun ChooseCategory() {
     var categories by remember {
         mutableStateOf(viewModel.categories)
     }
-    viewModel.addCategory("Frutta")
-    viewModel.addCategory("Verdura")
+
 
 
 

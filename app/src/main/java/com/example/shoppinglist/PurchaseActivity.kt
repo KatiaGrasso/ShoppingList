@@ -134,7 +134,10 @@ fun MainScreen() {
 
             // Pulsante per aprire il popup
             Button(
-                onClick = { showDialog = true },
+                onClick = { showDialog = true }
+                , Modifier.drawWithContent {
+                    drawContent()
+                }
             ) {
                 Text("Aggiungi")
             }
