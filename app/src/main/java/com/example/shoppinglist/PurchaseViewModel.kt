@@ -79,6 +79,13 @@ class PurchaseViewModel: ViewModel() {
 
     }
     fun removeItem(item: PurchasableItem){
+        var categoryList = map[item.category]
+        if(categoryList?.size==1){
+            map.remove(item.category)
+        }
+        else{
+            categoryList?.remove(item)
+        }
         itemList.remove(item)
     }
 

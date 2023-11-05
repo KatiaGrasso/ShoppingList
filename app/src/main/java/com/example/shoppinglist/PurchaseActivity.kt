@@ -90,7 +90,7 @@ fun MainScreen() {
                 shape = RoundedCornerShape(16.dp)
             ){ Text(text = item.key, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)}
 
-            list.forEachIndexed{ index, item ->
+            list.forEachIndexed{index, item ->
                 var isChecked by remember { mutableStateOf(item.isPurchased) }
                 ItemRow(
                     itemDescription = item.description,
@@ -103,16 +103,18 @@ fun MainScreen() {
                     },
                     onDeleteClick = {
                         // Gestisci l'eliminazione dell'elemento
-
-                        map=map.toMutableMap().apply { list?.remove(item) }
-                        if(list.isNullOrEmpty()){map.remove(item.category)}
-                        viewModel.removeItem(item)
-
-                        /*shoppingItems = shoppingItems.toMutableList().apply {
+                        shoppingItems = shoppingItems.toMutableList().apply {
                             removeAt(index)
                         }
+                        list = list.toMutableList().apply {
+                            removeAt(index)
+                        }
+
+                        viewModel.removeItem(item)
+
+
                         if(index!=shoppingItems.size)
-                            isChecked=shoppingItems.get(index).isPurchased*/
+                            isChecked=shoppingItems.get(index).isPurchased
 
                     }
                 )
