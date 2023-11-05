@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -143,103 +144,113 @@ fun ChooseCategory() {
 
 
     Row() {
-        ExposedDropdownMenuBox(
-            expanded = isExpanded,
-            onExpandedChange = { isExpanded = it }
-        ) {
+        if (category == "Aggiungi categoria") {
             TextField(
-                value = category,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                    //icona di default per i menù a tendina
-                },
-                modifier = Modifier.menuAnchor()
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Inserisci categoria") },
+                modifier = Modifier.fillMaxWidth()
             )
-            ExposedDropdownMenu(
+        } else {
+            ExposedDropdownMenuBox(
                 expanded = isExpanded,
-                onDismissRequest = { isExpanded = false }
-            )
-            {
-                categories.forEachIndexed { index, cat ->
+                onExpandedChange = { isExpanded = it }
+            ) {
+                TextField(
+                    value = category,
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                        //icona di default per i menù a tendina
+                    },
+                    modifier = Modifier.menuAnchor()
+                )
+                ExposedDropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false }
+                )
+                {
+                    categories.forEachIndexed { index, cat ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = cat)
+                            },
+                            onClick = {
+                                category = cat
+                                isExpanded =
+                                    false //se clicco su una categoria, chiudo il menù a tendina
+                                category_toAdd = ""
+                                text = cat
+                                category_toAdd = cat
+                            })
+                    }
+
                     DropdownMenuItem(
                         text = {
-                            Text(text = cat)
+                            Text(text = "Aggiungi categoria")
+                            //TODO aggiungere bottone
                         },
                         onClick = {
-                            category = cat
-                            isExpanded =
-                                false //se clicco su una categoria, chiudo il menù a tendina
-                            category_toAdd=""
-                            category_toAdd=cat
+                            category = "Aggiungi categoria"
+
                         })
-                }
 
-                DropdownMenuItem(
-                    text = {
-                        Text(text = "Aggiungi categoria")
-                        //TODO aggiungere bottone
-                    },
-                    onClick = {
-                        category = ""
-                        //isExpanded = false  //questo faceva sì che si chiudesse il menù
-                        showDialog = true
-
-                    })
-
-                if (showDialog) {
-                    Dialog(
-                        onDismissRequest = {
-                            // Chiudi il popup quando l'utente tocca all'esterno
-                            showDialog = false
-                        }
-                    ) {
-                        // Contenuto del popup
-                        Box(
-                            modifier = Modifier //specifiche estetiche del pop up
-                                .width(600.dp)
-                                .height(400.dp)
-                                .padding(16.dp)
-                                .background(Color.White),
-
-                            contentAlignment = Alignment.Center
-                        ) {
-
-                            Row {
-                                OutlinedTextField(
-                                    value = text,
-                                    onValueChange = {
-                                        text = it
-                                    }, //TODO aggiunta voce alla lista degli item
-                                    label = { Text("Inserisci categoria") }
-
-                                )
+                    if (showDialog) {
+                        Dialog(
+                            onDismissRequest = {
+                                // Chiudi il popup quando l'utente tocca all'esterno
+                                showDialog = false
                             }
-                            //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
-                            Button(
-                                onClick = {
-                                    showDialog = false;
-                                    viewModel.addCategory(text);
-                                    category = text; // Chiudo il popup premendo su chiudi
-                                    category_toAdd=""
-                                    category_toAdd=text
-                                },
-                                modifier = Modifier.align(Alignment.BottomEnd)
+                        ) {
+                            // Contenuto del popup
+                            Box(
+                                modifier = Modifier //specifiche estetiche del pop up
+                                    .width(600.dp)
+                                    .height(400.dp)
+                                    .padding(16.dp)
+                                    .background(Color.White),
+
+                                contentAlignment = Alignment.TopCenter
                             ) {
-                                Text("Aggiungi")
+
+                                Row {
+                                    OutlinedTextField(
+                                        value = text,
+                                        onValueChange = {
+                                            text = it
+                                        }, //TODO aggiunta voce alla lista degli item
+                                        label = { Text("Inserisci categoria") }
+
+                                    )
+                                }
+                                //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
+                                Button(
+
+                                    onClick = {
+                                        if (category == "Aggiungi categoria") {
+                                            category =
+                                                text // Imposta il valore della categoria con il testo inserito
+                                        }
+                                        showDialog = false;
+                                        viewModel.addCategory(category);
+                                        category_toAdd = category
+                                    },
+                                    modifier = Modifier.align(Alignment.BottomEnd)
+                                ) {
+                                    Text("Aggiungi")
+                                }
                             }
                         }
                     }
                 }
-            }
 
+            }
         }
+
     }
 
 }
-
-
 
 
 @Composable
