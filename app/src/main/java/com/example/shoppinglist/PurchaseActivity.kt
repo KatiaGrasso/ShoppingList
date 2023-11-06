@@ -56,7 +56,6 @@ class PurchaseActivity : ComponentActivity() {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
@@ -80,7 +79,7 @@ fun MainScreen() {
         )
 
         mappaVista.forEach{item->
-            var list=item.value
+            var list by remember { mutableStateOf(item.value) }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,18 +90,17 @@ fun MainScreen() {
 
             }
 
-            list.forEachIndexed{index, item ->
-                var isChecked by remember { mutableStateOf(item.isPurchased) }
+            list.forEachIndexed{index, itemOfList ->
+                var isChecked by remember { mutableStateOf(itemOfList.isPurchased) }
                 ItemRow(
-                    item=item,
+                    item=itemOfList,
                     isChecked = isChecked,
                     onCheckedChange = {
                         isChecked = it
-                        item.isPurchased=it
+                        itemOfList.isPurchased=it
                     },
                     onDeleteClick = {
-                        viewModel.removeItem(item)
-
+                        viewModel.removeItem(itemOfList);
 
                     }, mappa=mappaVista
 
@@ -134,6 +132,8 @@ fun MainScreen() {
             ) {
                 Text("Aggiungi")
             }
+
+
 
             if (showDialog) {
                 // Dialog per il popup
@@ -180,6 +180,7 @@ fun MainScreen() {
 
     }
 
+
 }
 
 @Composable
@@ -219,15 +220,18 @@ fun ItemRow(item: PurchasableItem,
                     }},
                 modifier = Modifier.padding(start = 8.dp),
 
+
                 ) {
                 Icon(imageVector = Icons.Outlined.Delete,
                     contentDescription = "Elimina",
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
+
             }
         }
     }
+
 }
 
 
