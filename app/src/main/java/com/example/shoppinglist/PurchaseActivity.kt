@@ -62,7 +62,7 @@ class PurchaseActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     var showDialog by remember { mutableStateOf(false) }
-    var mappa_vista by remember { mutableStateOf(viewModel.map) }
+    var mappaVista by remember { mutableStateOf(viewModel.map) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +79,7 @@ fun MainScreen() {
             textAlign = TextAlign.Center
         )
 
-        mappa_vista.forEach{item->
+        mappaVista.forEach{item->
             var list=item.value
             Card(
                 modifier = Modifier
@@ -98,14 +98,13 @@ fun MainScreen() {
                     isChecked = isChecked,
                     onCheckedChange = {
                         isChecked = it
-                        // Puoi anche gestire l'aggiornamento dell'elemento nel tuo ViewModel qui
-                        viewModel.updateItem(item.copy(isPurchased = it))
+                        item.isPurchased=it
                     },
                     onDeleteClick = {
                         viewModel.removeItem(item)
 
 
-                    }, mappa=mappa_vista
+                    }, mappa=mappaVista
 
                 )
 
@@ -114,7 +113,7 @@ fun MainScreen() {
         }
 
         Text(text = viewModel.map.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
-        Text(text = mappa_vista.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
+        Text(text = mappaVista.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
 
     }
     Box(
@@ -171,7 +170,7 @@ fun MainScreen() {
             Button(
                 onClick = {
                     viewModel.map=mutableMapOf<String, MutableList<PurchasableItem>>()
-                    mappa_vista= viewModel.map
+                    mappaVista= viewModel.map
                 }, Modifier.drawWithContent { drawContent() }
             ) {
                 Text("Clear All")
@@ -213,7 +212,11 @@ fun ItemRow(item: PurchasableItem,
 
             // Bottone Elimina
             FloatingActionButton(
-                onClick = { onDeleteClick; mappa[item.category]?.remove(item) },
+                onClick = { onDeleteClick;
+                    mappa[item.category]?.remove(item);
+                    if(mappa[item.category].isNullOrEmpty()){
+                        mappa.remove(item.category)
+                    }},
                 modifier = Modifier.padding(start = 8.dp),
 
                 ) {
@@ -223,7 +226,6 @@ fun ItemRow(item: PurchasableItem,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
-            Modifier.drawWithContent { drawContent() }
         }
     }
 }
