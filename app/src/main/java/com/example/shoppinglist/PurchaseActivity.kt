@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,9 +18,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -87,8 +94,7 @@ fun MainScreen() {
             list.forEachIndexed{index, item ->
                 var isChecked by remember { mutableStateOf(item.isPurchased) }
                 ItemRow(
-                    itemDescription = item.description,
-                    itemCategory = item.category,
+                    item=item,
                     isChecked = isChecked,
                     onCheckedChange = {
                         isChecked = it
@@ -97,9 +103,9 @@ fun MainScreen() {
                     },
                     onDeleteClick = {
                         viewModel.removeItem(item)
-                        mappa_vista=mappa_vista.toMutableMap().apply {mappa_vista[item.category]?.remove(item)}
-                        if(list.isNullOrEmpty()){mappa_vista.remove(item.category)}
-                    }
+
+
+                    }, mappa=mappa_vista
 
                 )
 
@@ -165,7 +171,7 @@ fun MainScreen() {
             Button(
                 onClick = {
                     viewModel.map=mutableMapOf<String, MutableList<PurchasableItem>>()
-                    mappa_vista= mutableMapOf<String, MutableList<PurchasableItem>>()
+                    mappa_vista= viewModel.map
                 }, Modifier.drawWithContent { drawContent() }
             ) {
                 Text("Clear All")
@@ -176,4 +182,51 @@ fun MainScreen() {
     }
 
 }
+
+@Composable
+fun ItemRow(item: PurchasableItem,
+            isChecked: Boolean,
+            onCheckedChange: (Boolean) -> Unit,
+            onDeleteClick: () -> Unit,
+            mappa: MutableMap<String, MutableList<PurchasableItem>>) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column ( modifier = Modifier.padding(2.dp)){
+            Text(
+                text = item.description,
+                fontSize = 18.sp
+            )
+        }
+
+        Row( verticalAlignment = Alignment.CenterVertically) {
+            // Checkbox
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = { onCheckedChange(it) }
+            )
+
+            // Bottone Elimina
+            FloatingActionButton(
+                onClick = { onDeleteClick; mappa[item.category]?.remove(item) },
+                modifier = Modifier.padding(start = 8.dp),
+
+                ) {
+                Icon(imageVector = Icons.Outlined.Delete,
+                    contentDescription = "Elimina",
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+            Modifier.drawWithContent { drawContent() }
+        }
+    }
+}
+
+
 
