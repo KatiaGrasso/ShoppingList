@@ -33,48 +33,20 @@ import androidx.lifecycle.ViewModel
 
 
 class PurchaseViewModel: ViewModel() {
-    var itemList = mutableListOf<PurchasableItem>() //Lista degli elementi
-    var categories = mutableListOf<String>()
-    var map= mutableMapOf<String, MutableList<PurchasableItem>>()
 
+    var map= mutableMapOf<String, MutableList<PurchasableItem>>()
     fun addItem(description: String, category: String)
     {
+        var item=PurchasableItem(description, category)
 
-        var itemListDescriptions= mutableListOf<String>()
-        for (i in itemList){
-            itemListDescriptions.add(i.description)
+        if(map.containsKey(category)){
+            map[category]?.add(item)
         }
-        var flag=false
-        for (c in itemListDescriptions){
-            if(c==description){
-                flag=true
-            }
+        else{
+            var startList= mutableListOf<PurchasableItem>()
+            startList.add(item)
+            map.put(category, startList)
         }
-        if(!flag){
-            val newItem = PurchasableItem(description, category)
-
-            // Aggiungi l'elemento a "itemList"
-            itemList.add(newItem)
-
-            // Verifica se "category" esiste come chiave in "map"
-            val categoryList = map.getOrPut(category) { mutableListOf() }
-
-            // Aggiungi l'elemento a "map" nella lista corrispondente a "category"
-            categoryList.add(newItem)
-        }
-
-
-    }
-    fun addCategory(category: String)
-    {
-        var flag=false
-        for (c in categories){
-            if(c==category){
-                flag=true
-            }
-        }
-        if(!flag)
-            categories.add(category)
     }
     fun updateItem(item: PurchasableItem){
 
@@ -87,17 +59,7 @@ class PurchaseViewModel: ViewModel() {
         else{
             categoryList?.remove(item)
         }
-        itemList.remove(item)
     }
-
-
-
-    //TODO
-    // metodi: 4
-    // aggiunta item
-    // rimozione item
-    // check item
-    // aggiunta categoria (chiave) con items (valori) -> Lista
 
 }
 val viewModel=PurchaseViewModel()
@@ -127,7 +89,6 @@ fun AddDescription() {
 fun ChooseCategory() {
 
     var text by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
     var isExpanded by remember {
         mutableStateOf(false) //default: menù chiuso
     }
@@ -135,21 +96,14 @@ fun ChooseCategory() {
         mutableStateOf("Categoria") //default: nessuna scelta
     }
 
-    var categories by remember {
-        mutableStateOf(viewModel.categories)
-    }
-
-
-
-
-
     Row() {
         if (category == "Aggiungi categoria") {
             TextField(
                 value = text,
-                onValueChange = { text = it },
+                onValueChange = { text = it;category_toAdd=text },
                 label = { Text("Inserisci categoria") },
                 modifier = Modifier.fillMaxWidth()
+
             )
         } else {
             ExposedDropdownMenuBox(
@@ -171,18 +125,18 @@ fun ChooseCategory() {
                     onDismissRequest = { isExpanded = false }
                 )
                 {
-                    categories.forEachIndexed { index, cat ->
+                    viewModel.map.forEach { cat ->
                         DropdownMenuItem(
                             text = {
-                                Text(text = cat)
+                                Text(text = cat.key)
                             },
                             onClick = {
-                                category = cat
-                                isExpanded =
-                                    false //se clicco su una categoria, chiudo il menù a tendina
+                                category = cat.key
                                 category_toAdd = ""
-                                text = cat
-                                category_toAdd = cat
+                                text = cat.key
+                                category_toAdd = text
+                                isExpanded = false //se clicco su una categoria, chiudo il menù a tendina
+
                             })
                     }
 
@@ -196,53 +150,7 @@ fun ChooseCategory() {
 
                         })
 
-                    if (showDialog) {
-                        Dialog(
-                            onDismissRequest = {
-                                // Chiudi il popup quando l'utente tocca all'esterno
-                                showDialog = false
-                            }
-                        ) {
-                            // Contenuto del popup
-                            Box(
-                                modifier = Modifier //specifiche estetiche del pop up
-                                    .width(600.dp)
-                                    .height(400.dp)
-                                    .padding(16.dp)
-                                    .background(Color.White),
 
-                                contentAlignment = Alignment.TopCenter
-                            ) {
-
-                                Row {
-                                    OutlinedTextField(
-                                        value = text,
-                                        onValueChange = {
-                                            text = it
-                                        }, //TODO aggiunta voce alla lista degli item
-                                        label = { Text("Inserisci categoria") }
-
-                                    )
-                                }
-                                //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
-                                Button(
-
-                                    onClick = {
-                                        if (category == "Aggiungi categoria") {
-                                            category =
-                                                text // Imposta il valore della categoria con il testo inserito
-                                        }
-                                        showDialog = false;
-                                        viewModel.addCategory(category);
-                                        category_toAdd = category
-                                    },
-                                    modifier = Modifier.align(Alignment.BottomEnd)
-                                ) {
-                                    Text("Aggiungi")
-                                }
-                            }
-                        }
-                    }
                 }
 
             }

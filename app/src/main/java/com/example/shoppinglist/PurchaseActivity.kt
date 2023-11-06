@@ -22,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,8 +43,6 @@ class PurchaseActivity : ComponentActivity() {
         viewModel.addItem("Carote", "Verdura")
         viewModel.addItem("Zucchine", "Verdura")
         viewModel.addItem("Uva", "Frutta")
-        viewModel.addCategory( "Frutta")
-        viewModel.addCategory("Verdura")
         setContent {
             //TODO da inserire in un box sotto la voce descrizione
             MainScreen()
@@ -55,15 +54,8 @@ class PurchaseActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
-
-    var itemList = viewModel.itemList
-    var shoppingItems by remember { mutableStateOf(itemList) }
     var showDialog by remember { mutableStateOf(false) }
-    var categories= viewModel.categories
-    var mappa= viewModel.map
-    var map by remember { mutableStateOf(mappa) }
-
-
+    var mappa_vista by remember { mutableStateOf(viewModel.map) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,7 +72,7 @@ fun MainScreen() {
             textAlign = TextAlign.Center
         )
 
-        map.forEach{item->
+        mappa_vista.forEach{item->
             var list=item.value
             Card(
                 modifier = Modifier
@@ -88,7 +80,9 @@ fun MainScreen() {
                     .padding(20.dp)
                     .size(50.dp),
                 shape = RoundedCornerShape(16.dp)
-            ){ Text(text = item.key, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)}
+            ){ Text(text = item.key, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+
+            }
 
             list.forEachIndexed{index, item ->
                 var isChecked by remember { mutableStateOf(item.isPurchased) }
@@ -102,33 +96,19 @@ fun MainScreen() {
                         viewModel.updateItem(item.copy(isPurchased = it))
                     },
                     onDeleteClick = {
-                        // Gestisci l'eliminazione dell'elemento
-                        shoppingItems = shoppingItems.toMutableList().apply {
-                            removeAt(index)
-                        }
-                        list = list.toMutableList().apply {
-                            removeAt(index)
-                        }
-
                         viewModel.removeItem(item)
-
-
-                        if(index!=shoppingItems.size)
-                            isChecked=shoppingItems.get(index).isPurchased
-
+                        mappa_vista=mappa_vista.toMutableMap().apply {mappa_vista[item.category]?.remove(item)}
+                        if(list.isNullOrEmpty()){mappa_vista.remove(item.category)}
                     }
+
                 )
 
 
             }
         }
 
-
-
-        //Text(text = itemList.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
-        //Text(text = shoppingItems.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
-        //Text(text = map.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
-        //Text(text = mappa.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
+        Text(text = viewModel.map.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
+        Text(text = mappa_vista.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
 
     }
     Box(
@@ -171,9 +151,7 @@ fun MainScreen() {
                         Button(
                             onClick = {
                                 showDialog = false;
-                                shoppingItems.add(PurchasableItem(description_toAdd, category_toAdd))// Chiudo il popup premendo su chiudi
                                 viewModel.addItem(description_toAdd, category_toAdd)
-
                             },
                             modifier = Modifier.align(Alignment.BottomEnd)
                         ) {
@@ -186,12 +164,9 @@ fun MainScreen() {
 
             Button(
                 onClick = {
-                    shoppingItems = emptyList<PurchasableItem>().toMutableList()
-                    itemList= emptyList<PurchasableItem>().toMutableList()
-                    categories.clear()
-                }, Modifier.drawWithContent {
-                    drawContent()
-                }
+                    viewModel.map=mutableMapOf<String, MutableList<PurchasableItem>>()
+                    mappa_vista= mutableMapOf<String, MutableList<PurchasableItem>>()
+                }, Modifier.drawWithContent { drawContent() }
             ) {
                 Text("Clear All")
 

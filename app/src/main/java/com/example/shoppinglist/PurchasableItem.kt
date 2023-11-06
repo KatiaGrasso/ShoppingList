@@ -17,15 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 data class PurchasableItem (val description:String, val category:String, var isPurchased: Boolean=false){
-    //TODO
-    // costruttori:
-    // item: costruttore
-    // categorie: array
-
 
 }
 
@@ -45,11 +41,6 @@ fun ItemRow(itemDescription: String, itemCategory: String, isChecked: Boolean, o
                 text = itemDescription,
                 fontSize = 18.sp
             )
-           /* Text(
-                text = itemCategory,
-                fontSize = 12.sp
-            )*/
-
         }
 
         Row( verticalAlignment = Alignment.CenterVertically) {
@@ -71,6 +62,7 @@ fun ItemRow(itemDescription: String, itemCategory: String, isChecked: Boolean, o
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
+            Modifier.drawWithContent { drawContent() }
     }
     }
 }
