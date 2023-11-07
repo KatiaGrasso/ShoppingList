@@ -29,6 +29,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
@@ -46,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -95,20 +98,37 @@ fun MainScreen() {
             var visible by remember { mutableStateOf(false) } //flag che indica se gli item di una categoria sono visibili o meno
             val density = LocalDensity.current
             var list by remember { mutableStateOf(item.value) }
+            var arrowDown = Icons.Outlined.KeyboardArrowDown
+            var arrowUp = Icons.Outlined.KeyboardArrowUp
+            if(visible){arrowDown=arrowUp}
+
             Card(
                 onClick = { visible = !visible },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(5.dp)
                     .size(50.dp),
-                shape = RoundedCornerShape(16.dp)
-            ){
-                Text(text = item.key,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(8.dp))
-            }
+                shape = RoundedCornerShape(10.dp),
+            ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = item.key,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                        Icon(
+                            imageVector = arrowDown,
+                            contentDescription = "Apri tendina",
+                            modifier = Modifier.size(30.dp).align(Alignment.CenterEnd).padding(0.dp,0.dp,10.dp,0.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                }
+
 
             list.forEachIndexed{index, itemOfList ->
                 var isChecked by remember { mutableStateOf(itemOfList.isPurchased) }
