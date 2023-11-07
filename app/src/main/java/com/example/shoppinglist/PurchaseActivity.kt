@@ -1,8 +1,17 @@
 package com.example.shoppinglist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +46,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,6 +67,7 @@ class PurchaseActivity : ComponentActivity() {
         }
     }
 }
+@SuppressLint("MutableCollectionMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
@@ -70,44 +82,70 @@ fun MainScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
 
 
-    ) {
+        ) {
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Lista della spesa", fontSize = 24.sp,
+            text = "Lista della spesa", fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
 
         mappaVista.forEach{item->
+            var visible by remember { mutableStateOf(false) } //flag che indica se gli item di una categoria sono visibili o meno
+            val density = LocalDensity.current
             var list by remember { mutableStateOf(item.value) }
             Card(
+                onClick = { visible = !visible },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(20.dp)
+                    .padding(10.dp)
                     .size(50.dp),
                 shape = RoundedCornerShape(16.dp)
-            ){ Text(text = item.key, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-
+            ){
+                Text(text = item.key,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(8.dp))
             }
 
             list.forEachIndexed{index, itemOfList ->
                 var isChecked by remember { mutableStateOf(itemOfList.isPurchased) }
-                ItemRow(
-                    item=itemOfList,
-                    isChecked = isChecked,
-                    onCheckedChange = {
-                        isChecked = it
-                        itemOfList.isPurchased=it
-                    },
-                    onDeleteClick = {
-                        viewModel.removeItem(itemOfList);
+                //Componente necessario per gestire la visibilità
+                AnimatedVisibility(
+                    visible = visible,
+                    enter = slideInVertically(animationSpec = tween(durationMillis = 700)) {
+                        with(density) { -40.dp.roundToPx() }
+                    } + expandVertically(
+                        expandFrom = Alignment.Top,
+                        animationSpec = tween(durationMillis = 700)
+                    ) + fadeIn(),
+                    exit = shrinkVertically(animationSpec = tween(durationMillis = 700)) + fadeOut()
+                ){
+                    Column (
+                        modifier = Modifier
+                            .padding(6.dp)
+                    ){
+                        ItemRow(
+                            item=itemOfList,
+                            isChecked = isChecked,
+                            onCheckedChange = {
+                                isChecked = it
+                                itemOfList.isPurchased=it
+                            },
+                            onDeleteClick = {
+                                viewModel.removeItem(itemOfList);
 
-                    }, mappa=mappaVista
-
-                )
-
+                            }, mappa=mappaVista
+                        )
+                    }
+                }
 
             }
+
+
+
         }
 
         Text(text = viewModel.map.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
