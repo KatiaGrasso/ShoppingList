@@ -1,7 +1,6 @@
 package com.example.shoppinglist
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,9 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -21,34 +17,32 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 
 class PurchaseViewModel: ViewModel() {
 
-    var map= mutableMapOf<String, MutableList<PurchasableItem>>()
-    var categories= mutableListOf<String>()
+    var map= MutableLiveData<Map<String, List<PurchasableItem>>>(
+        emptyMap()
+    )
+    var items=MutableLiveData<List<PurchasableItem>>(emptyList())
+    var categories = MutableLiveData<List<String>>(emptyList())
+
     fun addItem(description: String, category: String)
     {
         var item=PurchasableItem(description, category)
-        if(description!="" && category!= ""){
-            if(map.containsKey(category)){
-                map[category]?.add(item)
-            }
-            else{
-                var startList= mutableListOf<PurchasableItem>()
-                startList.add(item)
-                map.put(category, startList)
-                categories.add(category)
-            }
+        items.value = items.value?.plus(item) ?: listOf(item)
+        map.value = items.value?.groupBy { it.category } ?: emptyMap()
+        if(categories.value?.contains(category) == false){
+            categories.value = categories.value?.plus(category) ?: listOf(category)
         }
 
     }
@@ -57,18 +51,17 @@ class PurchaseViewModel: ViewModel() {
     }
     fun removeItem(item: PurchasableItem){
 
-        var categoryList = map[item.category]
-        if(categoryList!= null && categoryList.size==1){
-            map.remove(item.category)
-        }
-        else if(categoryList!= null && categoryList.size>1){
-            map[item.category]?.remove(item)
+        items.value = items.value?.filter { it != item } ?: emptyList()
+        map.value = items.value?.groupBy { it.category } ?: emptyMap()
+    }
 
-        }
+    fun clearItems() {
+        items.value = emptyList()
+        map.value = emptyMap()
     }
 
 }
-val viewModel=PurchaseViewModel()
+
 var description_toAdd =""
 var category_toAdd= ""
 
@@ -92,7 +85,7 @@ fun AddDescription() {
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
-fun ChooseCategory() {
+fun ChooseCategory(viewModel: PurchaseViewModel) {
 
     var text by remember { mutableStateOf("") }
     var isExpanded by remember {
@@ -101,6 +94,8 @@ fun ChooseCategory() {
     var category by remember {
         mutableStateOf("Categoria") //default: nessuna scelta
     }
+    val map by viewModel.map.observeAsState()
+    val categories by viewModel.categories.observeAsState()
 
     Row() {
         if (category == "Aggiungi categoria") {
@@ -131,7 +126,7 @@ fun ChooseCategory() {
                     onDismissRequest = { isExpanded = false }
                 )
                 {
-                    viewModel.categories.forEach { cat ->
+                    categories?.forEach { cat ->
                         DropdownMenuItem(
                             text = {
                                 Text(text = cat)
@@ -142,7 +137,6 @@ fun ChooseCategory() {
                                 text = cat
                                 category_toAdd = text
                                 isExpanded = false //se clicco su una categoria, chiudo il menù a tendina
-
                             })
                     }
 
@@ -168,14 +162,14 @@ fun ChooseCategory() {
 
 
 @Composable
-fun PopupMenu() {
+fun PopupMenu(viewModel: PurchaseViewModel) {
 
     Box(
         modifier = Modifier.fillMaxSize(0.8F),
         contentAlignment = Alignment.Center
     ) {
         Column { // Utilizzo  Column per garantire che Categoria e Descrizione non si sovrappongano
-            ChooseCategory()
+            ChooseCategory(viewModel)
             Spacer(modifier = Modifier.height(16.dp))
             AddDescription()
         }
