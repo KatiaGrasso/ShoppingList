@@ -34,7 +34,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -269,35 +268,20 @@ fun ItemRow(item: PurchasableItem,
             )
         }
 
-        Row( verticalAlignment = Alignment.CenterVertically) {
+        Row( modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.End
+        ) {
             // Checkbox
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = { onCheckedChange(it) }
+                onCheckedChange = { onCheckedChange(it) },
             )
-
-            // Bottone Elimina
-            FloatingActionButton(
-                onClick = { onDeleteClick;
-                    mappa[item.category]?.remove(item);
-                    if(mappa[item.category].isNullOrEmpty()){
-                        mappa.remove(item.category)
-                    }},
-                modifier = Modifier.padding(start = 8.dp),
-
-
-                ) {
-                Icon(imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Elimina",
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
 
             }
         }
     }
 
-}
+
 
 
 
