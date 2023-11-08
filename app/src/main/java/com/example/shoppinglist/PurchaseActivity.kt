@@ -97,7 +97,7 @@ fun MainScreen() {
         mappaVista.forEach{item->
             var visible by remember { mutableStateOf(false) } //flag che indica se gli item di una categoria sono visibili o meno
             val density = LocalDensity.current
-            var list by remember { mutableStateOf(item.value) }
+            var list =item.value
             var arrowDown = Icons.Outlined.KeyboardArrowDown
             var arrowUp = Icons.Outlined.KeyboardArrowUp
             if(visible){arrowDown=arrowUp}

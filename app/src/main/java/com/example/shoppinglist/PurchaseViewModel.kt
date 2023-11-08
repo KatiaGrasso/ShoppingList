@@ -39,16 +39,18 @@ class PurchaseViewModel: ViewModel() {
     fun addItem(description: String, category: String)
     {
         var item=PurchasableItem(description, category)
+        if(description!="" && category!= ""){
+            if(map.containsKey(category)){
+                map[category]?.add(item)
+            }
+            else{
+                var startList= mutableListOf<PurchasableItem>()
+                startList.add(item)
+                map.put(category, startList)
+                categories.add(category)
+            }
+        }
 
-        if(map.containsKey(category)){
-            map[category]?.add(item)
-        }
-        else{
-            var startList= mutableListOf<PurchasableItem>()
-            startList.add(item)
-            map.put(category, startList)
-            categories.add(category)
-        }
     }
     fun updateItem(item: PurchasableItem){
 
