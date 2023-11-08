@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -34,11 +35,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,6 +59,7 @@ import me.saket.swipe.SwipeableActionsBox
 
 class PurchaseActivity : ComponentActivity() {
 
+    val viewModel by viewModels<PurchaseViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.addItem("Carote", "Verdura")
@@ -65,7 +67,7 @@ class PurchaseActivity : ComponentActivity() {
         viewModel.addItem("Uva", "Frutta")
         setContent {
             //TODO da inserire in un box sotto la voce descrizione
-            MainScreen()
+            MainScreen(viewModel)
         }
     }
 }
@@ -73,9 +75,10 @@ class PurchaseActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: PurchaseViewModel) {
     var showDialog by remember { mutableStateOf(false) }
-    var mappaVista by remember { mutableStateOf(viewModel.map) }
+    val mappaVista by viewModel.map.observeAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -93,7 +96,7 @@ fun MainScreen() {
             textAlign = TextAlign.Center
         )
 
-        mappaVista.forEach{item->
+        mappaVista?.forEach{item->
             var visible by remember { mutableStateOf(false) } //flag che indica se gli item di una categoria sono visibili o meno
             val density = LocalDensity.current
             var list = item.value
@@ -123,7 +126,10 @@ fun MainScreen() {
                         Icon(
                             imageVector = arrowDown,
                             contentDescription = "Apri tendina",
-                            modifier = Modifier.size(30.dp).align(Alignment.CenterEnd).padding(0.dp,0.dp,10.dp,0.dp)
+                            modifier = Modifier
+                                .size(30.dp)
+                                .align(Alignment.CenterEnd)
+                                .padding(0.dp, 0.dp, 10.dp, 0.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
@@ -163,7 +169,7 @@ fun MainScreen() {
                                 onDeleteClick = {
                                     viewModel.removeItem(itemOfList);
 
-                                }, mappa = mappaVista
+                                }, mappa = mappaVista?: emptyMap()
                             )
                         }
                     }
@@ -217,7 +223,7 @@ fun MainScreen() {
                             .background(Color.White),
                         contentAlignment = Alignment.Center
                     ) {
-                        PopupMenu() //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
+                        PopupMenu(viewModel) //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
                         Button(
                             onClick = {
                                 showDialog = false;
@@ -234,8 +240,7 @@ fun MainScreen() {
 
             Button(
                 onClick = {
-                    viewModel.map=mutableMapOf<String, MutableList<PurchasableItem>>()
-                    mappaVista= viewModel.map
+                          viewModel.clearItems()
                 }, Modifier.drawWithContent { drawContent() }
             ) {
                 Text("Clear All")
@@ -253,7 +258,7 @@ fun ItemRow(item: PurchasableItem,
             isChecked: Boolean,
             onCheckedChange: (Boolean) -> Unit,
             onDeleteClick: () -> Unit,
-            mappa: MutableMap<String, MutableList<PurchasableItem>>) {
+            mappa: Map<String, List<PurchasableItem>>) {
 
     Row(
         modifier = Modifier
@@ -276,24 +281,6 @@ fun ItemRow(item: PurchasableItem,
                 onCheckedChange = { onCheckedChange(it) }
             )
 
-            // Bottone Elimina
-            FloatingActionButton(
-                onClick = { onDeleteClick;
-                    mappa[item.category]?.remove(item);
-                    if(mappa[item.category].isNullOrEmpty()){
-                        mappa.remove(item.category)
-                    }},
-                modifier = Modifier.padding(start = 8.dp),
-
-
-                ) {
-                Icon(imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Elimina",
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-            }
         }
     }
 
