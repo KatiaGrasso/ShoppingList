@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModel
 class PurchaseViewModel: ViewModel() {
 
     var map= mutableMapOf<String, MutableList<PurchasableItem>>()
+    var categories= mutableListOf<String>()
     fun addItem(description: String, category: String)
     {
         var item=PurchasableItem(description, category)
@@ -46,18 +47,21 @@ class PurchaseViewModel: ViewModel() {
             var startList= mutableListOf<PurchasableItem>()
             startList.add(item)
             map.put(category, startList)
+            categories.add(category)
         }
     }
     fun updateItem(item: PurchasableItem){
 
     }
     fun removeItem(item: PurchasableItem){
+
         var categoryList = map[item.category]
-        if(categoryList?.size==1){
+        if(categoryList!= null && categoryList.size==1){
             map.remove(item.category)
         }
-        else{
-            categoryList?.remove(item)
+        else if(categoryList!= null && categoryList.size>1){
+            map[item.category]?.remove(item)
+
         }
     }
 
@@ -125,15 +129,15 @@ fun ChooseCategory() {
                     onDismissRequest = { isExpanded = false }
                 )
                 {
-                    viewModel.map.forEach { cat ->
+                    viewModel.categories.forEach { cat ->
                         DropdownMenuItem(
                             text = {
-                                Text(text = cat.key)
+                                Text(text = cat)
                             },
                             onClick = {
-                                category = cat.key
+                                category = cat
                                 category_toAdd = ""
-                                text = cat.key
+                                text = cat
                                 category_toAdd = text
                                 isExpanded = false //se clicco su una categoria, chiudo il menù a tendina
 
