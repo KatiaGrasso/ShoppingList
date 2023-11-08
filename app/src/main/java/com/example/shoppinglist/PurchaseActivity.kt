@@ -46,12 +46,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
 class PurchaseActivity : ComponentActivity() {
 
@@ -97,6 +100,7 @@ fun MainScreen() {
             var arrowDown = Icons.Outlined.KeyboardArrowDown
             var arrowUp = Icons.Outlined.KeyboardArrowUp
             if(visible){arrowDown=arrowUp}
+            val deleteIcon = Icons.Outlined.Delete
 
             Card(
                 onClick = { visible = !visible },
@@ -142,19 +146,26 @@ fun MainScreen() {
                     Column (
                         modifier = Modifier
                             .padding(6.dp)
-                    ){
-                        ItemRow(
-                            item=itemOfList,
-                            isChecked = isChecked,
-                            onCheckedChange = {
-                                isChecked = it
-                                itemOfList.isPurchased=it
-                            },
-                            onDeleteClick = {
-                                viewModel.removeItem(itemOfList);
-
-                            }, mappa=mappaVista
+                    ) {
+                        val delete = SwipeAction(
+                            onSwipe = { viewModel.removeItem(itemOfList) },
+                            icon = rememberVectorPainter(deleteIcon),
+                            background = Color.Red
                         )
+                        SwipeableActionsBox(endActions = listOf(delete)) {
+                            ItemRow(
+                                item = itemOfList,
+                                isChecked = isChecked,
+                                onCheckedChange = {
+                                    isChecked = it
+                                    itemOfList.isPurchased = it
+                                },
+                                onDeleteClick = {
+                                    viewModel.removeItem(itemOfList);
+
+                                }, mappa = mappaVista
+                            )
+                        }
                     }
                 }
 
