@@ -176,14 +176,10 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                 }
 
             }
-
-
-
         }
 
         Text(text = viewModel.map.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
         Text(text = mappaVista.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
-
     }
     Box(
         modifier = Modifier
@@ -228,10 +224,12 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                             onClick = {
                                 showDialog = false;
                                 viewModel.addItem(description_toAdd, category_toAdd)
+                                category_toAdd=""
                             },
                             modifier = Modifier.align(Alignment.BottomEnd)
                         ) {
                             Text("Chiudi")
+
                         }
 
                     }
