@@ -204,7 +204,12 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                         drawerState = drawerState,
                         drawerContent = {
                             ModalDrawerSheet {
-
+                                Text(
+                                    modifier = Modifier.fillMaxWidth().padding(0.dp,20.dp,0.dp,20.dp),
+                                    text = "Categorie", fontSize = 25.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
                                 viewModel.categories.value?.forEach { item ->
                                         Row(
                                             modifier = Modifier
@@ -216,8 +221,11 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                             Column(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
                                                     text = item,
-                                                    fontSize = 18.sp
+                                                    fontSize = 18.sp,
+                                                    textAlign = TextAlign.Center,
+                                                    modifier = Modifier.fillMaxWidth().padding(0.dp,5.dp,0.dp,20.dp)
                                                 )
+                                                Divider()
                                             }
                                         }
                                 }
