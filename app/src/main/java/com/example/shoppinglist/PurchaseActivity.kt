@@ -206,13 +206,15 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                         drawerContent = {
                             ModalDrawerSheet {
                                 Text(
-                                    modifier = Modifier.fillMaxWidth().padding(0.dp,20.dp,0.dp,20.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(0.dp, 20.dp, 0.dp, 20.dp),
                                     text = "Categorie", fontSize = 25.sp,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
                                 viewModel.categories.value?.forEach { item ->
-
+                                    // per ogni categoria ho una riga con nome e icona per editarlo
                                             Column(modifier = Modifier.fillMaxWidth()
                                             ) {
                                                 Box(
@@ -235,7 +237,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                                 }
 
                                                     IconButton(onClick = {
-                                                        // TO DO edit action
+
                                                     }, Modifier.drawWithContent {
                                                         drawContent()
                                                     }) {
@@ -520,6 +522,7 @@ fun ListItem(
         }
 
     }
+
 
 
 
