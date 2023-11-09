@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.outlined.Delete
@@ -239,6 +240,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                         var visible by remember { mutableStateOf(false) } //flag che indica se gli item di una categoria sono visibili o meno
                         val density = LocalDensity.current
                         var list = item.value
+                        var category = item.key
                         var arrowDown = Icons.Outlined.KeyboardArrowDown
                         var arrowUp = Icons.Outlined.KeyboardArrowUp
                         if (visible) {
@@ -257,8 +259,9 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                             Box(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
+
                                 Text(
-                                    text = item.key,
+                                    text= item.key,
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center,
@@ -272,9 +275,44 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                         .align(Alignment.CenterEnd)
                                         .padding(0.dp, 0.dp, 10.dp, 0.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                                ) {
+                                    IconButton(
+                                        onClick = {
+                                            viewModel.removeCategoryAndItems(category)
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Delete",
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .padding(0.dp, 0.dp, 34.dp, 0.dp)
+                                ) {
+                                    IconButton(
+                                        onClick = {
+                                            //check tutte le voci della categoria
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.CheckCircle,
+                                            contentDescription = "check",
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                }
                             }
                         }
+
+
 
 
                         list.forEachIndexed { index, itemOfList ->

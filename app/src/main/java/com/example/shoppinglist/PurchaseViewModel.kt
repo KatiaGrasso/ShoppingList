@@ -63,6 +63,11 @@ class PurchaseViewModel: ViewModel() {
         map.value = emptyMap()
     }
 
+    fun removeCategoryAndItems(category: String) {
+        items.value = items.value?.filter { it.category != category } ?: emptyList()
+        map.value = items.value?.groupBy { it.category } ?: emptyMap()
+    }
+
 }
 
 var description_toAdd =""
@@ -121,10 +126,8 @@ fun ChooseCategory(viewModel: PurchaseViewModel) {
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                        //icona di default per i menù a tendina
-                    },
-                    modifier = Modifier.menuAnchor()
+                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) //icona di default per i menù a tendina
+                       }, modifier = Modifier.menuAnchor()
                 )
                 ExposedDropdownMenu(
                     expanded = isExpanded,
@@ -148,7 +151,7 @@ fun ChooseCategory(viewModel: PurchaseViewModel) {
                     DropdownMenuItem(
                         text = {
                             Text(text = "Aggiungi categoria")
-                            //TODO aggiungere bottone
+
                         },
                         onClick = {
                             category = "Aggiungi categoria"
