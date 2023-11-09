@@ -47,6 +47,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -68,6 +70,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -117,7 +120,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                         if (isClosed) open() else close()
                                     }
                                 }
-                            }) {
+                            },) {
                                 Icon(Icons.Filled.List, contentDescription = "All categories")
                             }
 
@@ -201,19 +204,27 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                         drawerState = drawerState,
                         drawerContent = {
                             ModalDrawerSheet {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Column(modifier = Modifier.padding(2.dp)) {
-                                        Text(text =viewModel.categories.value.toString(),
-                                            fontSize = 18.sp
-                                        )
-                                    }
+
+                                viewModel.categories.value?.forEach { item ->
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Column(modifier = Modifier.fillMaxWidth()) {
+                                                Text(
+                                                    text = item,
+                                                    fontSize = 18.sp
+                                                )
+                                            }
+                                        }
                                 }
+
+
+
+
                             }
                         },
                     ) {
@@ -429,7 +440,24 @@ fun MainScreen(viewModel: PurchaseViewModel) {
         }
     }
 }
-    @Composable
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ListItem(
+    headlineContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    overlineContent: (@Composable () -> Unit)? = null,
+    supportingContent: (@Composable () -> Unit)? = null,
+    leadingContent: (@Composable () -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null,
+    colors: ListItemColors = ListItemDefaults.colors(),
+    tonalElevation: Dp = ListItemDefaults.Elevation,
+    shadowElevation: Dp = ListItemDefaults.Elevation
+) : Unit {
+
+}
+
+@Composable
     fun ItemRow(
         item: PurchasableItem,
         isChecked: Boolean,
