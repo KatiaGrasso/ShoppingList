@@ -39,11 +39,14 @@ class PurchaseViewModel: ViewModel() {
     fun addItem(description: String, category: String)
     {
         var item=PurchasableItem(description, category)
-        items.value = items.value?.plus(item) ?: listOf(item)
-        map.value = items.value?.groupBy { it.category } ?: emptyMap()
-        if(categories.value?.contains(category) == false){
-            categories.value = categories.value?.plus(category) ?: listOf(category)
+        if(description!= "" && category!= ""){
+            items.value = items.value?.plus(item) ?: listOf(item)
+            map.value = items.value?.groupBy { it.category } ?: emptyMap()
+            if(categories.value?.contains(category) == false){
+                categories.value = categories.value?.plus(category) ?: listOf(category)
+            }
         }
+
 
     }
     fun updateItem(item: PurchasableItem){
@@ -69,7 +72,9 @@ var category_toAdd= ""
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddDescription() {
-    var text by remember { mutableStateOf("") }
+    var text by remember {
+        mutableStateOf("")
+    }
     Row {
         OutlinedTextField(
             value = text,
@@ -94,7 +99,7 @@ fun ChooseCategory(viewModel: PurchaseViewModel) {
     var category by remember {
         mutableStateOf("Categoria") //default: nessuna scelta
     }
-    val map by viewModel.map.observeAsState()
+
     val categories by viewModel.categories.observeAsState()
 
     Row() {
