@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.BottomAppBar
@@ -211,23 +212,43 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                     textAlign = TextAlign.Center
                                 )
                                 viewModel.categories.value?.forEach { item ->
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(8.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Column(modifier = Modifier.fillMaxWidth()) {
-                                                Text(
-                                                    text = item,
-                                                    fontSize = 18.sp,
-                                                    textAlign = TextAlign.Center,
-                                                    modifier = Modifier.fillMaxWidth().padding(0.dp,5.dp,0.dp,20.dp)
+
+                                            Column(modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                Box(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    contentAlignment = Alignment.CenterEnd
                                                 )
+                                                {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(8.dp),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Text(
+                                                        text = item,
+                                                        fontSize = 18.sp,
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                    )
+                                                }
+
+                                                    IconButton(onClick = {
+                                                        // TO DO edit action
+                                                    }, Modifier.drawWithContent {
+                                                        drawContent()
+                                                    }) {
+                                                        Icon(
+                                                            imageVector = Icons.Outlined.Edit,
+                                                            contentDescription = "Modifica"
+                                                        )
+                                                    }
+                                                }
                                                 Divider()
+                                                Spacer(modifier = Modifier.width(8.dp))
                                             }
-                                        }
+
                                 }
 
 
