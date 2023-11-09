@@ -199,7 +199,21 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                     ModalNavigationDrawer(
                         drawerState = drawerState,
                         drawerContent = {
-                            ModalDrawerSheet { /* Drawer content */ }
+                            ModalDrawerSheet {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column(modifier = Modifier.padding(2.dp)) {
+                                        Text(text =viewModel.categories.value.toString(),
+                                            fontSize = 18.sp
+                                        )
+                                    }
+                                }
+                            }
                         },
                     ) {
                     }
