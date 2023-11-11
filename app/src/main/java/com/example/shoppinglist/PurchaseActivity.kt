@@ -314,55 +314,60 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                             arrowDown = arrowUp
                         }
                         val deleteIcon = Icons.Outlined.Delete
-
-                        Card(
-                            onClick = { visible = !visible },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp)
-                                .size(50.dp),
-                            shape = RoundedCornerShape(10.dp),
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-
-                                Text(
-                                    text= item.key,
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                                Icon(
-                                    imageVector = arrowDown,
-                                    contentDescription = "Apri tendina",
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                        .align(Alignment.CenterEnd)
-                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
-                                )
-
-                                Row(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterEnd)
-                                        .padding(0.dp, 0.dp, 12.dp, 0.dp)
+                        val deleteCat = SwipeAction(
+                            onSwipe = { viewModel.removeCategoryAndItems(category)},
+                            icon = rememberVectorPainter(deleteIcon),
+                            background = Color.Red
+                        )
+                        SwipeableActionsBox(endActions = listOf(deleteCat)) {
+                            Card(
+                                onClick = { visible = !visible },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(5.dp)
+                                    .size(50.dp),
+                                shape = RoundedCornerShape(10.dp)
                                 ) {
-                                    IconButton(
-                                        onClick = {
-                                            //check tutte le voci della categoria
-                                        }
+                                Box(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+
+                                    Text(
+                                        text = item.key,
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(8.dp),
+                                    )
+                                    Icon(
+                                        imageVector = arrowDown,
+                                        contentDescription = "Apri tendina",
+                                        modifier = Modifier
+                                            .size(30.dp)
+                                            .align(Alignment.CenterEnd)
+                                            .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                                    )
+
+                                    Row(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterEnd)
+                                            .padding(0.dp, 0.dp, 12.dp, 0.dp)
                                     ) {
-                                        Icon(
-                                            imageVector = Icons.Default.CheckCircle,
-                                            contentDescription = "check",
-                                        )
+                                        IconButton(
+                                            onClick = {
+                                                //check tutte le voci della categoria
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.CheckCircle,
+                                                contentDescription = "check",
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
                                     }
-                                    Spacer(modifier = Modifier.width(8.dp))
                                 }
                             }
                         }
-
 
 
 
