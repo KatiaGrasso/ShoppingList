@@ -100,6 +100,7 @@ class PurchaseActivity : ComponentActivity() {
 fun MainScreen(viewModel: PurchaseViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     val mappaVista by viewModel.map.observeAsState()
+    val categories by viewModel.categories.observeAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -200,7 +201,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                     },
                                     modifier = Modifier.align(Alignment.BottomEnd)
                                 ) {
-                                    Text("Chiudi")
+                                    Text("Conferma")
                                 }
 
                             }
@@ -219,7 +220,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
-                                viewModel.categories.value?.forEach { item ->
+                               categories?.forEach { item ->
                                     // per ogni categoria ho una riga con nome e icona per editarlo
                                             Column(modifier = Modifier.fillMaxWidth()
                                             ) {
@@ -243,14 +244,32 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                                 }
 
                                                     IconButton(onClick = {
-
+                                                        viewModel.removeCategoryAndItems(item)
                                                     }, Modifier.drawWithContent {
                                                         drawContent()
                                                     }) {
                                                         Icon(
-                                                            imageVector = Icons.Outlined.Edit,
-                                                            contentDescription = "Modifica"
+                                                            imageVector = Icons.Outlined.Delete,
+                                                            contentDescription = "Delete",
+
                                                         )
+                                                    }
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .align(Alignment.CenterEnd)
+                                                            .padding(0.dp, 0.dp, 18.dp, 0.dp)
+                                                    ) {
+                                                        IconButton(
+                                                            onClick = {
+
+                                                            }
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Outlined.Edit,
+                                                                contentDescription = "Modifica"
+                                                            )
+                                                        }
+                                                        Spacer(modifier = Modifier.width(8.dp))
                                                     }
                                                 }
                                                 Divider()
@@ -323,27 +342,11 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                         .align(Alignment.CenterEnd)
                                         .padding(0.dp, 0.dp, 10.dp, 0.dp)
                                 )
+
                                 Row(
                                     modifier = Modifier
                                         .align(Alignment.CenterEnd)
-                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
-                                ) {
-                                    IconButton(
-                                        onClick = {
-                                            viewModel.removeCategoryAndItems(category)
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterEnd)
-                                        .padding(0.dp, 0.dp, 34.dp, 0.dp)
+                                        .padding(0.dp, 0.dp, 12.dp, 0.dp)
                                 ) {
                                     IconButton(
                                         onClick = {
@@ -404,75 +407,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
 
                         }
                     }
-
-                    //Text(text = viewModel.map.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
-                    //Text(text = mappaVista.toString()) //serviva per controllare che gli elementi di shoppingList corrispondessero a quelli in viewmodel.itemlist
                 }
-                /* Box(
-                 modifier = Modifier
-                     .fillMaxSize()
-                     .padding(8.dp),
-                 contentAlignment = Alignment.BottomCenter
-
-             ) {
-                 Row {
-
-                     // Pulsante per aprire il popup
-                     Button(
-                         onClick = { showDialog = true }, Modifier.drawWithContent {
-                             drawContent()
-                         }
-                     ) {
-                         Text("Aggiungi")
-                     }
-
-
-
-                     if (showDialog) {
-                         // Dialog per il popup
-                         Dialog(
-                             onDismissRequest = {
-                                 // Chiudi il popup quando l'utente tocca all'esterno
-                                 showDialog = false
-                             }
-                         ) {
-                             // Contenuto del popup
-                             Box(
-                                 modifier = Modifier //specifiche estetiche del pop up
-                                     .width(600.dp)
-                                     .height(300.dp)
-                                     .padding(16.dp)
-                                     .background(Color.White),
-                                 contentAlignment = Alignment.Center
-                             ) {
-                                 PopupMenu(viewModel) //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
-                                 Button(
-                                     onClick = {
-                                         showDialog = false;
-                                         viewModel.addItem(description_toAdd, category_toAdd)
-                                         category_toAdd = ""
-                                     },
-                                     modifier = Modifier.align(Alignment.BottomEnd)
-                                 ) {
-                                     Text("Chiudi")
-
-                                 }
-
-                             }
-                         }
-                     }
-
-                     Button(
-                         onClick = {
-                             viewModel.clearItems()
-                         }, Modifier.drawWithContent { drawContent() }
-                     ) {
-                         Text("Clear All")
-
-                     }
-                 }
-
-             } */
             }
         }
     }

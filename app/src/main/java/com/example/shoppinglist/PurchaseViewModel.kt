@@ -62,7 +62,7 @@ class PurchaseViewModel: ViewModel() {
     }
 
     fun removeCategoryAndItems(category: String) {
-        items.value = items.value?.filter { it.category != category } ?: emptyList()
+        categories.value = categories.value?.filter { it != category } ?: emptyList()
         map.value = items.value?.groupBy { it.category } ?: emptyMap()
     }
 
