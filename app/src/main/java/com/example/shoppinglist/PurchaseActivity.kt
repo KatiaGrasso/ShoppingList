@@ -35,6 +35,8 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
@@ -54,6 +56,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -66,6 +69,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -314,11 +318,28 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                             arrowDown = arrowUp
                         }
                         val deleteIcon = Icons.Outlined.Delete
+                        val openAlertDialog = remember { mutableStateOf(false) }
                         val deleteCat = SwipeAction(
-                            onSwipe = { viewModel.removeCategoryAndItems(category)},
+                            onSwipe = {
+                                openAlertDialog.value = true
+                                      },
                             icon = rememberVectorPainter(deleteIcon),
                             background = Color.Red
                         )
+
+                        if(openAlertDialog.value==true) {
+                            MyAlertDialog(
+                                onDismissRequest = {openAlertDialog.value=false},
+                                onConfirmation = {
+                                    viewModel.removeCategoryAndItems(category)
+                                    openAlertDialog.value=false
+                                                 },
+                                dialogTitle = "Attenzione",
+                                dialogText = "Sei sicuro di voler eliminare la categoria? Se confermi, tutti prodotti di questa categoria verranno eliminati.",
+                                icon = Icons.Outlined.Warning
+                            )
+                        }
+
                         SwipeableActionsBox(endActions = listOf(deleteCat)) {
                             Card(
                                 onClick = { visible = !visible },
@@ -470,6 +491,47 @@ fun ListItem(
     }
 
 
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyAlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Annulla")
+            }
+        }
+    )
+}
 
 
