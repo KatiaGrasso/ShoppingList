@@ -105,8 +105,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
+            .fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
 
     ) {
@@ -152,115 +151,6 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                     )
                 },
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    ModalNavigationDrawer(
-                        drawerContent = {
-                            ModalDrawerSheet {
-                                Text("Drawer title", modifier = Modifier.padding(16.dp))
-                                Divider()
-                                NavigationDrawerItem(
-                                    label = { Text(text = "Drawer Item") },
-                                    selected = false,
-                                    onClick = { /*TODO*/ }
-                                )
-                                // ...other drawer items
-                            }
-                        }
-                    ) {
-                        // Screen content
-                    }
-                    if (showDialog) {
-                        // Dialog per il popup
-                        Dialog(
-                            onDismissRequest = {
-                                // Chiudi il popup quando l'utente tocca all'esterno
-                                showDialog = false
-                            }
-                        ) {
-                            // Contenuto del popup
-                            Box(
-                                modifier = Modifier //specifiche estetiche del pop up
-                                    .width(600.dp)
-                                    .height(300.dp)
-                                    .padding(16.dp)
-                                    .background(Color.White),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                PopupMenu(viewModel) //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
-                                Button(
-                                    onClick = {
-                                        showDialog = false;
-                                        viewModel.addItem(description_toAdd, category_toAdd)
-                                    },
-                                    modifier = Modifier.align(Alignment.BottomEnd)
-                                ) {
-                                    Text("Chiudi")
-                                }
-
-                            }
-                        }
-                    }
-
-                    ModalNavigationDrawer(
-                        drawerState = drawerState,
-                        drawerContent = {
-                            ModalDrawerSheet {
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(0.dp, 20.dp, 0.dp, 20.dp),
-                                    text = "Categorie", fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center
-                                )
-                                viewModel.categories.value?.forEach { item ->
-                                    // per ogni categoria ho una riga con nome e icona per editarlo
-                                            Column(modifier = Modifier.fillMaxWidth()
-                                            ) {
-                                                Box(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    contentAlignment = Alignment.CenterEnd
-                                                )
-                                                {
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(8.dp),
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.SpaceBetween
-                                                ) {
-                                                    Text(
-                                                        text = item,
-                                                        fontSize = 18.sp,
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                    )
-                                                }
-
-                                                    IconButton(onClick = {
-
-                                                    }, Modifier.drawWithContent {
-                                                        drawContent()
-                                                    }) {
-                                                        Icon(
-                                                            imageVector = Icons.Outlined.Edit,
-                                                            contentDescription = "Modifica"
-                                                        )
-                                                    }
-                                                }
-                                                Divider()
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                            }
-
-                                }
-
-
-
-
-                            }
-                        },
-                    ) {
-                    }
-                }
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -467,9 +357,119 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                  }
 
              } */
+                Box(modifier = Modifier.fillMaxSize()) {
+                    ModalNavigationDrawer(
+                        drawerContent = {
+                            ModalDrawerSheet {
+                                Text("Drawer title", modifier = Modifier.padding(16.dp))
+                                Divider()
+                                NavigationDrawerItem(
+                                    label = { Text(text = "Drawer Item") },
+                                    selected = false,
+                                    onClick = { /*TODO*/ }
+                                )
+                                // ...other drawer items
+                            }
+                        }
+                    ) {
+                        // Screen content
+                    }
+                    if (showDialog) {
+                        // Dialog per il popup
+                        Dialog(
+                            onDismissRequest = {
+                                // Chiudi il popup quando l'utente tocca all'esterno
+                                showDialog = false
+                            }
+                        ) {
+                            // Contenuto del popup
+                            Box(
+                                modifier = Modifier //specifiche estetiche del pop up
+                                    .width(600.dp)
+                                    .height(300.dp)
+                                    .padding(16.dp)
+                                    .background(Color.White),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                PopupMenu(viewModel) //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
+                                Button(
+                                    onClick = {
+                                        showDialog = false;
+                                        viewModel.addItem(description_toAdd, category_toAdd)
+                                    },
+                                    modifier = Modifier.align(Alignment.BottomEnd)
+                                ) {
+                                    Text("Chiudi")
+                                }
+
+                            }
+                        }
+                    }
+
+                    ModalNavigationDrawer(
+                        drawerState = drawerState,
+                        drawerContent = {
+                            ModalDrawerSheet {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(0.dp, 20.dp, 0.dp, 20.dp),
+                                    text = "Categorie", fontSize = 25.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+                                viewModel.categories.value?.forEach { item ->
+                                    // per ogni categoria ho una riga con nome e icona per editarlo
+                                    Column(
+                                    ) {
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentAlignment = Alignment.CenterEnd
+                                        )
+                                        {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    text = item,
+                                                    fontSize = 18.sp,
+                                                    modifier = Modifier.fillMaxWidth()
+                                                        .padding(8.dp),
+                                                )
+                                            }
+
+                                            IconButton(onClick = {
+
+                                            }, Modifier.drawWithContent {
+                                                drawContent()
+                                            }.padding(8.dp)) {
+                                                Icon(
+                                                    imageVector = Icons.Outlined.Edit,
+                                                    contentDescription = "Modifica"
+                                                )
+                                            }
+                                        }
+                                        Divider()
+                                    }
+
+                                }
+
+
+
+
+                            }
+                        },
+                    ) {
+                    }
+                }
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
