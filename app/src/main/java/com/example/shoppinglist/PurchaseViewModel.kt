@@ -49,9 +49,7 @@ class PurchaseViewModel: ViewModel() {
 
 
     }
-    fun updateItem(item: PurchasableItem){
 
-    }
     fun removeItem(item: PurchasableItem){
 
         items.value = items.value?.filter { it != item } ?: emptyList()

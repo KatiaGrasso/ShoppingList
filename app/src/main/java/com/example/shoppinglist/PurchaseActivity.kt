@@ -1,5 +1,4 @@
 package com.example.shoppinglist
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -75,6 +74,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.zIndex
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -103,10 +103,10 @@ fun MainScreen(viewModel: PurchaseViewModel) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
+            .fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
 
     ) {
@@ -114,6 +114,8 @@ fun MainScreen(viewModel: PurchaseViewModel) {
             Scaffold(
                 bottomBar = {
                     BottomAppBar(
+                        modifier = Modifier.zIndex(if (drawerState.isOpen) 1f else 0f),
+                        //per vedere la bottom bar sopra quando apro il side menu
                         actions = {
                             IconButton(onClick = {
                                 scope.launch {
@@ -152,7 +154,11 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                     )
                 },
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(if (drawerState.isOpen) 1f else 0f)
+                    //per vedere il side menu sopra
+                ) {
                     ModalNavigationDrawer(
                         drawerContent = {
                             ModalDrawerSheet {
