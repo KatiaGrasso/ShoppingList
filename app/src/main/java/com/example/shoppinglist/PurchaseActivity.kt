@@ -244,7 +244,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                                 }
 
                                                     IconButton(onClick = {
-                                                        viewModel.removeCategoryAndItems(item)
+                                                        viewModel.removeCategory(item)
                                                     }, Modifier.drawWithContent {
                                                         drawContent()
                                                     }) {

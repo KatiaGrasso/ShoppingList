@@ -61,10 +61,17 @@ class PurchaseViewModel: ViewModel() {
         map.value = emptyMap()
     }
 
+    //rimuovere da side menu e drop down menu
+    fun removeCategory(category: String) {
+        categories.value =  categories.value?.filter { it != category } ?: emptyList()
+    }
+
+    //da view Model
     fun removeCategoryAndItems(category: String) {
-        categories.value = categories.value?.filter { it != category } ?: emptyList()
+        items.value = items.value?.filter { it.category != category } ?: emptyList()
         map.value = items.value?.groupBy { it.category } ?: emptyMap()
     }
+
 
 }
 
