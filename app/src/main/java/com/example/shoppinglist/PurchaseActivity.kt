@@ -197,11 +197,51 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                     .background(Color.White),
                                 contentAlignment = Alignment.Center
                             ) {
+                                val openAlertDialog = remember { mutableStateOf(false) }
+
+                                if(openAlertDialog.value==true) {
+
+                                    AlertDialog(
+                                        icon = {Icon(Icons.Outlined.Warning, contentDescription = "Warning Icon") },
+                                        title = {Text(text = "Attenzione")},
+                                        text = {Text(
+                                            textAlign = TextAlign.Center,
+                                            text = "Non hai aggiunto la categoria o la descrizione. Se non lo fai, non verrà aggiunta nessuna voce alla lista.")},
+                                        onDismissRequest = {openAlertDialog.value=false},
+                                        confirmButton = {
+                                            TextButton(
+                                                onClick = {
+                                                    openAlertDialog.value=false
+                                                }
+                                            ) {
+                                                Text("Chiudi")
+                                            }
+                                        }
+                                    )
+
+                                   /* MyAlertDialog(
+                                        onDismissRequest = {
+                                            openAlertDialog.value=false
+                                        },
+                                        onConfirmation = {
+                                            openAlertDialog.value=false
+                                            showDialog=false
+                                        },
+                                        dialogTitle = "Attenzione",
+                                        dialogText = "Non hai aggiunto la categoria o la descrizione. Se confermi, non verrà aggiunta nessuna voce alla lista.",
+                                        icon = Icons.Outlined.Warning
+                                    ) */
+                                }
+
                                 PopupMenu(viewModel) //contenuto pop-up: richiamo l'analoga funzione in PurchaseViewModel
                                 Button(
                                     onClick = {
-                                        showDialog = false;
-                                        viewModel.addItem(description_toAdd, category_toAdd)
+                                        if(description_toAdd.equals("") || category_toAdd.equals("") || category_toAdd.equals("Categoria")){
+                                            openAlertDialog.value=true
+                                        } else {
+                                            viewModel.addItem(description_toAdd, category_toAdd)
+                                            showDialog = false;
+                                        }
                                     },
                                     modifier = Modifier.align(Alignment.BottomEnd)
                                 ) {
@@ -508,7 +548,9 @@ fun MyAlertDialog(
             Text(text = dialogTitle)
         },
         text = {
-            Text(text = dialogText)
+            Text(
+                textAlign = TextAlign.Center,
+                text = dialogText)
         },
         onDismissRequest = {
             onDismissRequest()
