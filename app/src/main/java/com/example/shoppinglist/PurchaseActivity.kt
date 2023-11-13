@@ -352,6 +352,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                         Button(onClick = {
                                             modificaCategoria = false
                                             viewModel.modifyCategory(categoriaDaModificare, category_toAdd)
+                                            viewModel.modifyKeys(categoriaDaModificare, category_toAdd)
                                             })
                                         {
                                             Text(text = "Conferma")

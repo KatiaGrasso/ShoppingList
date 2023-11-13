@@ -71,6 +71,18 @@ class PurchaseViewModel: ViewModel() {
         }
     }
 
+    fun modifyKeys(originalKey: String, modifiedKey: String) {
+        if (modifiedKey.isNotEmpty()) {
+            map.value = map.value?.entries?.associate { (key, value) ->
+                if (key == originalKey) {
+                    modifiedKey to value
+                } else {
+                    key to value
+                }
+            } ?: emptyMap()
+        }
+    }
+
     fun checkItem(item: PurchasableItem, index: Int){
         var map_copy=map
         if(item.isPurchased){
