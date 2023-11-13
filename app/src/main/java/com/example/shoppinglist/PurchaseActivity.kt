@@ -417,6 +417,10 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                         IconButton(
                                             onClick = {
                                                 //check tutte le voci della categoria
+                                                list.forEachIndexed{index, x->viewModel.checkItem(x, index)
+                                                visible=!visible
+                                                visible=!visible //queste due righe visivamente non fanno niente, ma forzano l'aggiornamento della vista
+                                                 }
                                             }
                                         ) {
                                             Icon(
@@ -433,7 +437,8 @@ fun MainScreen(viewModel: PurchaseViewModel) {
 
 
                         list.forEachIndexed { index, itemOfList ->
-                            var isChecked by remember { mutableStateOf(itemOfList.isPurchased) }
+                            var isChecked = itemOfList.isPurchased
+
                             //Componente necessario per gestire la visibilità
                             AnimatedVisibility(
                                 visible = visible,
@@ -460,7 +465,9 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                             isChecked = isChecked,
                                             onCheckedChange = {
                                                 isChecked = it
-                                                itemOfList.isPurchased = it
+                                                viewModel.checkItem(itemOfList, index)
+                                                visible=!visible
+                                                visible=!visible
                                             },
                                             onDeleteClick = {
                                                 viewModel.removeItem(itemOfList);
@@ -474,6 +481,8 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                         }
                     }
                 }
+                
+                Text(text = mappaVista.toString())
             }
         }
     }

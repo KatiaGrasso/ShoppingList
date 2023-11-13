@@ -50,6 +50,20 @@ class PurchaseViewModel: ViewModel() {
 
     }
 
+    fun checkItem(item: PurchasableItem, index: Int){
+        var map_copy=map
+        if(item.isPurchased){
+            item.isPurchased=false
+            map.value?.get(item.category)?.get(index)?.isPurchased=false
+
+        }
+        else{
+            item.isPurchased=true
+            map.value?.get(item.category)?.get(index)?.isPurchased=true
+
+        }
+    }
+
     fun removeItem(item: PurchasableItem){
 
         items.value = items.value?.filter { it != item } ?: emptyList()
