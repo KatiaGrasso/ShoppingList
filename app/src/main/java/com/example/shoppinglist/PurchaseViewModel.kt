@@ -49,6 +49,27 @@ class PurchaseViewModel: ViewModel() {
 
 
     }
+    fun addCategory(category: String): Boolean{
+        var flag=false
+        if(categories.value?.contains(category) == false && category!=null && category!=""){
+            categories.value = categories.value?.plus(category) ?: listOf(category)
+        }
+        else
+            flag=true
+        return flag
+    }
+
+    fun modifyCategory(categoriaOriginale: String, categoriaModificata: String){
+        if (categoriaModificata.isNotEmpty()) {
+            categories.value = categories.value?.map {
+                if (it == categoriaOriginale) {
+                    categoriaModificata
+                } else {
+                    it
+                }
+            }
+        }
+    }
 
     fun checkItem(item: PurchasableItem, index: Int){
         var map_copy=map
@@ -203,3 +224,36 @@ fun PopupMenu(viewModel: PurchaseViewModel) {
 
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddCategory(viewModel: PurchaseViewModel) {
+
+    var text by remember { mutableStateOf("") }
+
+    TextField(
+        value = text,
+        onValueChange = { text = it;category_toAdd=text },
+        label = { Text("Inserisci categoria") },
+        modifier = Modifier.fillMaxWidth()
+
+    )
+
+
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModifyCategory(viewModel: PurchaseViewModel, cat: String) {
+
+    var text by remember { mutableStateOf(cat) }
+
+    TextField(
+        value = text,
+        onValueChange = { text = it;category_toAdd=text },
+        modifier = Modifier.fillMaxWidth()
+
+    )
+
+
+}
+

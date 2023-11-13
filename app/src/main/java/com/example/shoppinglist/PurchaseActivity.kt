@@ -256,6 +256,9 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                         drawerState = drawerState,
                         drawerContent = {
                             ModalDrawerSheet {
+                                var aggiungiCategoria by remember{mutableStateOf(false)}
+                                var modificaCategoria by remember{mutableStateOf(false)}
+                                var categoriaDaModificare by remember{mutableStateOf("")}
                                 Text(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -305,7 +308,8 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                                     ) {
                                                         IconButton(
                                                             onClick = {
-
+                                                                modificaCategoria=true
+                                                                categoriaDaModificare=item
                                                             }
                                                         ) {
                                                             Icon(
@@ -320,6 +324,42 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                                 Spacer(modifier = Modifier.width(8.dp))
                                             }
 
+                                }
+
+                                Button(onClick = { aggiungiCategoria=true }) {
+                                    Text(text = "Aggiungi categoria")
+                                }
+                                if(aggiungiCategoria){
+                                    AddCategory(viewModel)
+                                    Row(){
+                                        Button(onClick = {
+                                            aggiungiCategoria = false
+                                            if (viewModel.addCategory(category_toAdd)) {
+                                                //pop up che la categoria già esiste
+                                            }})
+                                        {
+                                            Text(text = "Conferma")
+                                        }
+                                        Button(onClick = { aggiungiCategoria = false }) {
+                                            Text(text = "Annulla")
+                                        }
+                                    }
+
+                                }
+                                if(modificaCategoria){
+                                    ModifyCategory(viewModel = viewModel, cat = categoriaDaModificare)
+                                    Row(){
+                                        Button(onClick = {
+                                            modificaCategoria = false
+                                            viewModel.modifyCategory(categoriaDaModificare, category_toAdd)
+                                            })
+                                        {
+                                            Text(text = "Conferma")
+                                        }
+                                        Button(onClick = {modificaCategoria = false }) {
+                                            Text(text = "Annulla")
+                                        }
+                                    }
                                 }
 
 
@@ -482,7 +522,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                     }
                 }
                 
-                Text(text = mappaVista.toString())
+                //Text(text = mappaVista.toString())
             }
         }
     }
