@@ -107,7 +107,7 @@ fun MainScreen(viewModel: PurchaseViewModel) {
     val categories by viewModel.categories.observeAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
+    var deleteAlert = remember {mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -133,13 +133,25 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                             }
 
                             IconButton(onClick = {
-                                viewModel.clearItems()
+                                deleteAlert.value= true
                             }, Modifier.drawWithContent { drawContent()
                             }) {
                                 Icon(
                                     Icons.Filled.Delete,
                                     contentDescription = "Clear all",
                                 )
+                                if(deleteAlert.value==true) {
+                                    MyAlertDialog(
+                                        onDismissRequest = {deleteAlert.value=false},
+                                        onConfirmation = {
+                                            viewModel.clearItems()
+                                            deleteAlert.value=false
+                                        },
+                                        dialogTitle = "Attenzione",
+                                        dialogText = "Sei sicuro di voler cancellare l'intera lista?",
+                                        icon = Icons.Outlined.Warning
+                                    )
+                                }
                             }
                         },
                         floatingActionButton = {
@@ -328,9 +340,10 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                 Column(modifier = Modifier.fillMaxWidth(),
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    Box(modifier = Modifier.fillMaxWidth()
-                                        .padding(top=8.dp)
-                                        .padding(bottom=8.dp),
+                                    Box(modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp)
+                                        .padding(bottom = 8.dp),
                                         contentAlignment = Alignment.Center,
 
                                         ){
