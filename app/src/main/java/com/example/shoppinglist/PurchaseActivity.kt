@@ -325,22 +325,37 @@ fun MainScreen(viewModel: PurchaseViewModel) {
                                             }
 
                                 }
+                                Column(modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Box(modifier = Modifier.fillMaxWidth()
+                                        .padding(top=8.dp)
+                                        .padding(bottom=8.dp),
+                                        contentAlignment = Alignment.Center,
 
-                                Button(onClick = { aggiungiCategoria=true }) {
-                                    Text(text = "Aggiungi categoria")
+                                        ){
+                                        Button(onClick = { aggiungiCategoria=true }) {
+                                            Text(text = "Aggiungi categoria")
+                                    }}
                                 }
+
                                 if(aggiungiCategoria){
                                     AddCategory(viewModel)
-                                    Row(){
+                                    Row(modifier=Modifier.padding(top=8.dp))
+                                    {
                                         Button(onClick = {
                                             aggiungiCategoria = false
                                             if (viewModel.addCategory(category_toAdd)) {
                                                 //pop up che la categoria già esiste
-                                            }})
+                                            }},
+                                            modifier=Modifier.padding(start=4.dp)
+                                            )
                                         {
                                             Text(text = "Conferma")
                                         }
-                                        Button(onClick = { aggiungiCategoria = false }) {
+                                        Button(onClick = { aggiungiCategoria = false },
+                                            modifier=Modifier.padding(start=8.dp),
+                                            ) {
                                             Text(text = "Annulla")
                                         }
                                     }
